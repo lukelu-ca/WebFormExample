@@ -309,6 +309,7 @@ namespace WebForm.DAL
             {
                 Ingredients.Add(new Ingredient
                 {
+                    
                     id = Convert.ToInt32(reader["id"].ToString()),
                     name = reader["name"].ToString(),
                     quantity = reader["quantity"].ToString(),

@@ -30,7 +30,7 @@
                                 <div class="modal fade" id='myModal<%# Eval("id") %>' role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            Loading...
+                                            <div class="alert alert-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</div>
                                         </div>
                                     </div>
                                 </div>
