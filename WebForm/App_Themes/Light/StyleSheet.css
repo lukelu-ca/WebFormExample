@@ -1,0 +1,49 @@
+﻿/*
+     * Author: Luke Lu
+     * Student ID: 300804279
+     * Course: COMP 229
+     */
+.radio {
+    margin-left: 30px;
+}
+
+.navbar {
+    background-color: #9b59b6;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #ecf0f1;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #ecf0f1;
+}
+
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover {
+    background-color: #8e44ad;
+    color: white;
+}
+
+.panel-default > .panel-heading {
+    background-color: #ecdbff;
+}
+
+.btn {
+    background-color: #ecdbff;
+}
+
+
+footer {
+    margin-top: 75px;
+    background-color: #9b59b6;
+    padding: 10px;
+    color: white;
+}
+
+.jumbotron {
+    background-color: #ecdbff;
+}
+
+th {
+    background-color: #ecdbff;
+}
