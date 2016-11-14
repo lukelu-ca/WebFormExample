@@ -30,7 +30,7 @@
                                 <div class="modal fade" id='myModal<%# Eval("id") %>' role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            <div class="alert alert-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</div>
+                                            <div class="alert alert-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>Loading...</div>
                                         </div>
                                     </div>
                                 </div>
@@ -42,9 +42,15 @@
                             <td>
                                 <asp:Label ID="cookingTimeLabel" runat="server" Text='<%# Eval("cookingTime") %>' />
                             </td>
-
                             <td>
-                                <asp:Button ID="DeleteItemButton" runat="server" CommandName="DeleteItem" CommandArgument='<%# Eval("id") %>' Text="Delete" />
+                                <asp:Button ID="DeleteItemButton"
+                                    runat="server"
+                                    CssClass="btn btn-primary"
+                                    CommandName="DeleteItem"
+                                    CommandArgument='<%# Eval("id") %>'
+                                    Text="Delete" 
+                                    onclientclick="return confirm('Are you absolutely sure you want to delete this recipe?');"
+                                    />
                             </td>
                         </tr>
                     </ItemTemplate>

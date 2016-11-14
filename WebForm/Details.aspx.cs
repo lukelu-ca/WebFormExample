@@ -28,14 +28,14 @@ namespace WebForm.Web
                 RecipeDataBaseRepository repo = new RecipeDataBaseRepository();
                 Recipe recipe = repo.GetRecipe(recipeID);
                 divTitle.InnerText = "Recipe Details: " + recipe.name;
-                divCategory.InnerText = recipe.category;
-                divCookingTime.InnerText = recipe.cookingTime.ToString();
-                divNumberOfServings.InnerText = recipe.numberOfServings.ToString();
-                divSubmitBy.InnerText = recipe.submitBy;
-                divDescription.InnerText = recipe.description;
+                divCategory.InnerHtml = String.Format("<h5>{0}</h5>", recipe.category);
+                divCookingTime.InnerHtml = String.Format("<h5>{0}</h5>", recipe.cookingTime.ToString());
+                divNumberOfServings.InnerHtml = String.Format("<h5>{0}</h5>", recipe.numberOfServings.ToString());
+                divSubmitBy.InnerHtml = String.Format("<h5>{0}</h5>", recipe.submitBy);
+                divDescription.InnerHtml = String.Format("<h5>{0}</h5>", recipe.description);
 
                 //show Ingredients details
-                foreach(Ingredient ing in recipe.ingredients)
+                foreach (Ingredient ing in recipe.ingredients)
                 {
                     HtmlTableRow row = new HtmlTableRow();
                     HtmlTableCell cell = new HtmlTableCell();
