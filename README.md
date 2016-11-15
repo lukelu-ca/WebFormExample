@@ -15,7 +15,7 @@ COMP229 Assignment
             <li>ADO.NET for SQL Server</li>
             <li>ADO.NET excute stored procedure in Oracle and SQL Server</li>
             <li>Setting database server dynamicly</li>
-            <li>Bootstrap Css</li>
+            <li>Bootstrap Css productive web design</li>
             <li>Bootstrap remote modal method</li>
             <li>Amazon Web Service Cloud RDS Oracle Database</li>
             <li>Microsoft Azure Webapplication Deploy and SQL Server Database</li>
