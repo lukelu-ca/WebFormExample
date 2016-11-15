@@ -5,7 +5,10 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <div class="container">
-        <div class=" hidden alert-success" runat="server" id="divMessage"></div>
+        <div class=" hidden alert-success" runat="server" id="divMessage">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span id="divMessageBody" runat="server">Recipe was deleted successfully.</span>
+        </div>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><span class="glyphicon glyphicon-book"></span>&nbsp;List of Recipes </h3>
@@ -30,7 +33,7 @@
                                 <div class="modal fade" id='myModal<%# Eval("id") %>' role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            <div class="btn-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</div>
+                                            <div class="btn-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>Loading...</div>
                                         </div>
                                     </div>
                                 </div>
@@ -48,9 +51,8 @@
                                     CssClass="btn btn-primary"
                                     CommandName="DeleteItem"
                                     CommandArgument='<%# Eval("id") %>'
-                                    Text="Delete" 
-                                    onclientclick="return confirm('Are you absolutely sure you want to delete this recipe?');"
-                                    />
+                                    Text="Delete"
+                                    OnClientClick="return confirm('Are you absolutely sure you want to delete this recipe?');" />
                             </td>
                         </tr>
                     </ItemTemplate>

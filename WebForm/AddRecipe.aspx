@@ -9,7 +9,10 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
     <div class="container">
-        <div class="hidden alert-success" runat="server" id="divMessage"></div>
+        <div class="hidden alert-success" runat="server" id="divMessage">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span id="divMessageBody" runat="server">Recipe was saved successfully.</span>
+        </div>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><span class="glyphicon glyphicon-plus"></span>&nbsp;Add Recipe</h3>
@@ -53,7 +56,10 @@
                     <button id="btnAddRecipe" class="btn btn-primary" runat="server" onserverclick="btnAddRecipe_Click">&nbsp;&nbsp;<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Save&nbsp;&nbsp;</button>
                     <button id="btnCancelRecipe" class="btn btn-default" runat="server" onserverclick="btnCancelRecipe_Click" causesvalidation="False">&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</button>
                 </div>
-                <div class=" hidden alert-success" runat="server" id="divMessage2"></div>
+                <div class="hidden alert-success" runat="server" id="divMessage2">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <span id="diveMessageBody2" runat="server">Recipe was saved successfully.</span>
+                </div>
                 <p>
                 </p>
             </div>

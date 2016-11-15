@@ -28,7 +28,7 @@ namespace WebForm.Web
                 ListView1.DataBind();
                 divMessage.Attributes.Remove("class");
                 divMessage.Attributes.Add("class", "alert alert-success");
-                divMessage.InnerText = "Recipe was deleted successfully.";
+                //divMessage.InnerText = "Recipe was deleted successfully.";
 
             }
         }

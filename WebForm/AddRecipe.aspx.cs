@@ -131,10 +131,10 @@ namespace WebForm.Web
                 resetForm();
                 divMessage.Attributes.Remove("class");
                 divMessage.Attributes.Add("class", "alert alert-success");
-                divMessage.InnerText = "Recipe was saved successfully.";
+                //divMessage.InnerText = "Recipe was saved successfully.";
                 divMessage2.Attributes.Remove("class");
                 divMessage2.Attributes.Add("class", "alert alert-success");
-                divMessage2.InnerText = "Recipe was saved successfully.";
+                //divMessage2.InnerText = "Recipe was saved successfully.";
             }
 
         }

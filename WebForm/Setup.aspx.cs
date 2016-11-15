@@ -28,13 +28,14 @@ namespace WebForm.Web
                         break;
                 }
 
-                for (int i= 0;i < ConfigurationManager.ConnectionStrings.Count; i++)
+                for (int i = 0; i < ConfigurationManager.ConnectionStrings.Count; i++)
                 {
                     if (ConfigurationManager.ConnectionStrings[i].Name.StartsWith("My-"))
                         rblDataServer.Items.Add(new ListItem
                         {
-                            Text = ConfigurationManager.ConnectionStrings[i].Name.Substring(3),
-                            Value= ConfigurationManager.ConnectionStrings[i].Name
+
+                            Value = ConfigurationManager.ConnectionStrings[i].Name,
+                            Text = ConfigurationManager.AppSettings[ConfigurationManager.ConnectionStrings[i].Name]
                         });
                 }
                 rblDataServer.SelectedValue = (string)Session["CurrentConnectionStringName"];
@@ -58,6 +59,6 @@ namespace WebForm.Web
             Response.Redirect("~/Setup.aspx?save=true");
         }
 
-      
+
     }
 }
