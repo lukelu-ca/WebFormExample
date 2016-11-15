@@ -5,19 +5,20 @@ COMP229 Assignment
         </p>
         <p>Download Assignment instructions: <a href='http://luke-webform.azurewebsites.net/documents/Assignment1.pdf'>#1</a>, <a href='http://luke-webform.azurewebsites.net/documents/Assignment1.pdf'>#2</a>, <a href='http://luke-webform.azurewebsites.net/documents/Assignment1.pdf'>#3</a></p>
         <p>According the instructions, this project is using the below ASP.NET features. </p>
-        <ul>
-            <li>ASP.NET FORM Application</li>
-            <li>Master Page</li>
-            <li>Theme, Skin file</li>
+       <ul>
+            <li>Create ASP.NET FORM Application</li>
+            <li>Build Master Page</li>
+            <li>Use Theme, Skin file</li>
             <li>Change theme programmably</li>
-            <li>Users Webcontrol dynamicly loading</li>
-            <li>ADO.NET for Oracle</li>
-            <li>ADO.NET for SQL Server</li>
-            <li>ADO.NET excute stored procedure in Oracle and SQL Server</li>
-            <li>Setting database server dynamicly</li>
-            <li>Bootstrap Css productive web design</li>
-            <li>Bootstrap remote modal method</li>
-            <li>Amazon Web Service Cloud RDS Oracle Database</li>
-            <li>Microsoft Azure Webapplication Deploy and SQL Server Database</li>
-            <li>Github Source Code Controlling</li>
+            <li>Load Users Webcontrol dynamicly</li>
+            <li>CRUD operation by ADO.NET for Oracle</li>
+            <li>CRUD operation by ADO.NET for SQL Server</li>
+            <li>Excute stored procedure by ADO.NET in Oracle and SQL Server</li>
+            <li>Change database connectionstring dynamicly</li>
+            <li>Productive web design by Bootstrap</li>
+            <li>Open Bootstrap remote modal window</li>
+            <li>Connect to Amazon Web Service Cloud RDS Oracle Database</li>
+            <li>Connect to Microsoft Azure SQL Server Database</li>
+            <li>Deploy application to Microsoft Azure</li>
+            <li>Control Source Code through Github</li>
         </ul>
