@@ -15,7 +15,7 @@ namespace WebForm.Web
     public class BasePage : System.Web.UI.Page
     {
 
-        protected string selectedTheme;
+        protected string selectedTheme = null;
         public BasePage()
         {
             //
@@ -26,7 +26,7 @@ namespace WebForm.Web
 
         protected void Page_PreInit(object sender, EventArgs e)
         {
-            selectedTheme = (string)Session["Theme"];
+            if (Request.Cookies["Theme"] != null) selectedTheme = Request.Cookies["Theme"].Value.ToString();
             //Load Theme for all pages
             switch (selectedTheme)
             {
@@ -39,6 +39,28 @@ namespace WebForm.Web
                 default:
                     Page.Theme = "Dark";
                     break;
+            }
+        }
+
+
+
+        public void SetCookie(string name, string value, int expireDays = 15)
+        {
+            HttpCookie cookie = new HttpCookie(name, value);
+            cookie.Expires= DateTime.Now.AddDays(expireDays);
+            Response.SetCookie(cookie);
+        }
+
+
+        public string GetCookie(string name, string defaultValue = null)
+        {
+            if (Request.Cookies[name] != null)
+            {
+                return Request.Cookies[name].Value.ToString();
+            }
+            else
+            {
+                return defaultValue;
             }
         }
 

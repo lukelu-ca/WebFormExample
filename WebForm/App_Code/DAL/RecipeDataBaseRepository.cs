@@ -29,14 +29,21 @@ namespace WebForm.DAL
         private DbConnection conn;
         //Distinguish Server Type: SQLSever or Oracle;
         private ServerType provider;
-        //Current connection string, get from web.config by Session["CurrentConnectionStringName"]
+        //Current connection string, get from web.config by Cookies["CurrentConnectionStringName"]
         private string currentConnectionString;
 
+        private string GetCurrentConnectionStringName()
+        {
+            if (HttpContext.Current.Request.Cookies["CurrentConnectionStringName"] == null)
+                return ConfigurationManager.AppSettings["DefaultConnectionStringName"];
+            else
+                return HttpContext.Current.Request.Cookies["CurrentConnectionStringName"].Value.ToString();
+        }
         public RecipeDataBaseRepository()
         {
 
-            //get Session["CurrentConnectionStringName"], decide to use which connection string 
-            string currentConnectionStringName = HttpContext.Current.ApplicationInstance.Session["CurrentConnectionStringName"].ToString();
+            //get Cookies["CurrentConnectionStringName"], decide to use which connection string 
+            string currentConnectionStringName = GetCurrentConnectionStringName();
             // use factory mod to build ADO.NET
             //
 
@@ -67,13 +74,12 @@ namespace WebForm.DAL
             //Oracle can share one connection
             //SQL Server must create a new connection
             //if changed database then need recreate the DbConnection
-            if (conn == null || (bool)HttpContext.Current.ApplicationInstance.Session["CurrentConnectionStringNameChanged"])
+            if (conn == null)
             {
                 conn = factory.CreateConnection();
                 conn.ConnectionString = currentConnectionString;
 
                 conn.Open();
-                HttpContext.Current.ApplicationInstance.Session["CurrentConnectionStringNameChanged"] = false;
             }
             //Get Connection string from application value
             //Open Connection

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
+
 /*
    * Author: Luke Lu
    * Student ID: 300804279
@@ -38,7 +39,8 @@ namespace WebForm.Web
                             Text = ConfigurationManager.AppSettings[ConfigurationManager.ConnectionStrings[i].Name]
                         });
                 }
-                rblDataServer.SelectedValue = (string)Session["CurrentConnectionStringName"];
+
+                rblDataServer.SelectedValue = GetCookie("CurrentConnectionStringName", ConfigurationManager.AppSettings["DefaultConnectionStringName"]);
                 if (Convert.ToBoolean(Request.QueryString["save"]))
                 {
                     divMessage.Attributes.Remove("class");
@@ -51,10 +53,14 @@ namespace WebForm.Web
         protected void btnSave_Click(object sender, EventArgs e)
         {
             if (rdDark.Checked)
-            { Session["Theme"] = "Dark"; }
+            {
+                SetCookie("Theme", "Dark");
+            }
             else
-            { Session["Theme"] = "Light"; }
-            Session["CurrentConnectionStringName"] = rblDataServer.SelectedValue;
+            {
+                SetCookie("Theme", "Light");
+            }
+            SetCookie("CurrentConnectionStringName", rblDataServer.SelectedValue);
             Session["CurrentConnectionStringNameChanged"] = true;
             Response.Redirect("~/Setup.aspx?save=true");
         }

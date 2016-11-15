@@ -24,12 +24,7 @@
 
     void Session_Start(object sender, EventArgs e)
     {
-        // Code that runs when a new session is started
-        if (Session["Theme"] == null) Session["Theme"] = "Dark";
-        //get appsetting store to session
-        if (Session["CurrentConnectionStringName"] == null) Session["CurrentConnectionStringName"] = ConfigurationManager.AppSettings["DefaultConnectionStringName"];
-        //indicate CurrentConnectionStringName was changed
-        Session["CurrentConnectionStringNameChanged"] = true;
+
     }
 
     void Session_End(object sender, EventArgs e)
