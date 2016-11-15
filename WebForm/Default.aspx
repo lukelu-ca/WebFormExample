@@ -20,8 +20,8 @@
             <img src="images/books.jpg" class="img-circle" alt="Cinque Terre" width="304" height="236" />
         </div>
           <div class="col-md-4">
-            <h3>Setup Theme</h3>
-            <p><a href="setup.aspx">Click here to setup a theme</a> <br /><br /><br /><br /></p>
+            <h3>Setup</h3>
+            <p><a href="setup.aspx">Click here to setup a theme and database</a> <br /><br /><br /><br /></p>
             <img src="images/theme.png" class="img-circle" alt="Cinque Terre" width="304" height="236" />
         </div>
     

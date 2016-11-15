@@ -4,6 +4,8 @@ using WebForm.Model;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
+using System.Web;
+
 /*
  * Author: Luke Lu
  * Student ID: 300804279
@@ -16,16 +18,39 @@ namespace WebForm.DAL
     /// </summary>
     public class RecipeDataBaseRepository : IRecipeRepository
     {
+        enum ServerType
+        {
+            Oracle,
+            SQLServer
+        }
         //factory object
         private DbProviderFactory factory;
+        //connection obj for Oracle shared using
         private DbConnection conn;
+        //Distinguish Server Type: SQLSever or Oracle;
+        private ServerType provider;
+        //Current connection string, get from web.config by Session["CurrentConnectionStringName"]
+        private string currentConnectionString;
+
         public RecipeDataBaseRepository()
         {
-            //
+
+            //get Session["CurrentConnectionStringName"], decide to use which connection string 
+            string currentConnectionStringName = HttpContext.Current.ApplicationInstance.Session["CurrentConnectionStringName"].ToString();
             // use factory mod to build ADO.NET
             //
+
+
             //Get Provider: which is one of Oracle.ManagedAccess.Client and System.Data.SQLClient
-            factory = DbProviderFactories.GetFactory(ConfigurationManager.ConnectionStrings["ConnectionString"].ProviderName);
+            string provideName = ConfigurationManager.ConnectionStrings[currentConnectionStringName].ProviderName;
+            currentConnectionString = ConfigurationManager.ConnectionStrings[currentConnectionStringName].ConnectionString;
+
+            if (provideName.ToLower().Contains("sqlclient"))
+            { provider = ServerType.SQLServer; }
+            else if (provideName.ToLower().Contains("oracle"))
+            { provider = ServerType.Oracle; }
+
+            factory = DbProviderFactories.GetFactory(provideName);
         }
 
         /// <summary>
@@ -37,21 +62,42 @@ namespace WebForm.DAL
         private DbConnection getConnection()
         {
             //connection object
-            if (conn == null)
-            {
-                //Create a conncetion
-                conn = factory.CreateConnection();
-                //Get Connection string from web.config
-                conn.ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
-                //Open Connection
+            //Create a conncetion
+            //Oracle can share one connection
+            //SQL Server must create a new connection
+            //if changed database then need recreate the DbConnection
+            if (conn == null || (bool)HttpContext.Current.ApplicationInstance.Session["CurrentConnectionStringNameChanged"])
+            {
+                conn = factory.CreateConnection();
+                conn.ConnectionString = currentConnectionString;
+
                 conn.Open();
+                HttpContext.Current.ApplicationInstance.Session["CurrentConnectionStringNameChanged"] = false;
             }
+            //Get Connection string from application value
+            //Open Connection
             return conn;
         }
 
-
-
+        /// <summary>
+        /// consider parameterName 
+        /// SQLClient use @name
+        /// Oracle use :name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private string getParameterName(string name)
+        {
+            if (provider == ServerType.SQLServer)
+            {
+                return "@" + name;
+            }
+            else
+            {
+                return name;
+            }
+        }
 
         /// <summary>
         /// insert a recipe record to database
@@ -87,43 +133,43 @@ namespace WebForm.DAL
             //start create recipe recorder
 
             DbParameter para = factory.CreateParameter();
-            para.ParameterName = "v_recipeid";
+            para.ParameterName = getParameterName("v_recipeid");
             para.DbType = DbType.Int32;
             para.Direction = ParameterDirection.Output;
             cmd.Parameters.Add(para);
 
             para = factory.CreateParameter();
-            para.ParameterName = "v_name";
+            para.ParameterName = getParameterName("v_name");
             para.DbType = DbType.String;
             para.Value = r.name;
             cmd.Parameters.Add(para);
 
             para = factory.CreateParameter();
-            para.ParameterName = "v_submitby";
+            para.ParameterName = getParameterName("v_submitby");
             para.DbType = DbType.String;
             para.Value = r.submitBy;
             cmd.Parameters.Add(para);
 
             para = factory.CreateParameter();
-            para.ParameterName = "v_category";
+            para.ParameterName = getParameterName("v_category");
             para.DbType = DbType.String;
             para.Value = r.category;
             cmd.Parameters.Add(para);
 
             para = factory.CreateParameter();
-            para.ParameterName = "v_cookingTime";
+            para.ParameterName = getParameterName("v_cookingTime");
             para.DbType = DbType.Int32;
             para.Value = r.cookingTime;
             cmd.Parameters.Add(para);
 
             para = factory.CreateParameter();
-            para.ParameterName = "v_numberOfServings";
+            para.ParameterName = getParameterName("v_numberOfServings");
             para.DbType = DbType.Int32;
             para.Value = r.numberOfServings;
             cmd.Parameters.Add(para);
 
             para = factory.CreateParameter();
-            para.ParameterName = "v_description";
+            para.ParameterName = getParameterName("v_description");
             para.Value = r.description;
             para.DbType = DbType.String;
             cmd.Parameters.Add(para);
@@ -135,7 +181,7 @@ namespace WebForm.DAL
             //end of create recipe record
 
             //get recipeid from  sequence currval
-            int recipeID = int.Parse(cmd.Parameters["v_recipeid"].Value.ToString());
+            int recipeID = int.Parse(cmd.Parameters[getParameterName("v_recipeid")].Value.ToString());
 
             //start create ingredients recorders
 
@@ -147,16 +193,19 @@ namespace WebForm.DAL
                 /*
                  * INSERT Statement
                  */
-                cmd.CommandText = "INSERT INTO RR_INGREDIENT (id,name,quantity,unit,recipeid) VALUES (SQ_INGREDIENT_ID.NEXTVAL, :name, :quantity, :unit, :recipeid)";
 
+                if (provider == ServerType.Oracle)
+                    cmd.CommandText = "INSERT INTO RR_INGREDIENT (id,name,quantity,unit,recipeid) VALUES (SQ_INGREDIENT_ID.NEXTVAL, :name, :quantity, :unit, :recipeid)";
+                if (provider == ServerType.SQLServer)
+                    cmd.CommandText = "INSERT INTO RR_INGREDIENT (name,quantity,unit,recipeid) VALUES (@name, @quantity, @unit, @recipeid)";
                 para = factory.CreateParameter();
-                para.ParameterName = "name";
+                para.ParameterName = getParameterName("name");
                 para.Value = ing.name;
                 para.DbType = DbType.String;
                 cmd.Parameters.Add(para);
 
                 para = factory.CreateParameter();
-                para.ParameterName = "quantity";
+                para.ParameterName = getParameterName("quantity");
                 para.DbType = DbType.String;
                 para.Value = ing.quantity;
                 cmd.Parameters.Add(para);
@@ -168,7 +217,7 @@ namespace WebForm.DAL
                 cmd.Parameters.Add(para);
 
                 para = factory.CreateParameter();
-                para.ParameterName = "recipeid";
+                para.ParameterName = getParameterName("recipeid");
                 para.DbType = DbType.Int32;
                 para.Value = recipeID;
                 cmd.Parameters.Add(para);
@@ -186,12 +235,17 @@ namespace WebForm.DAL
         public void DeleteRecipe(int id)
         {
             DbCommand cmd = factory.CreateCommand();
-            cmd.CommandText = "DELETE FROM rr_ingredient WHERE recipeid= :recipeid";
+
+            if (provider == ServerType.Oracle)
+                cmd.CommandText = "DELETE FROM rr_ingredient WHERE recipeid= :recipeid";
+            if (provider == ServerType.SQLServer)
+                cmd.CommandText = "DELETE FROM rr_ingredient WHERE recipeid= @recipeid";
+
             cmd.Connection = getConnection();
             cmd.CommandType = CommandType.Text;
 
             DbParameter para = factory.CreateParameter();
-            para.ParameterName = "recipeid";
+            para.ParameterName = getParameterName("recipeid");
             para.DbType = DbType.Int32;
             para.Value = id;
             cmd.Parameters.Add(para);
@@ -200,9 +254,14 @@ namespace WebForm.DAL
 
             cmd = factory.CreateCommand();
             cmd.Connection = getConnection();
-            cmd.CommandText = "DELETE FROM rr_recipe WHERE id= :rid";
+
+            if (provider == ServerType.Oracle)
+                cmd.CommandText = "DELETE FROM rr_recipe WHERE id= :rid";
+            if (provider == ServerType.SQLServer)
+                cmd.CommandText = "DELETE FROM rr_recipe WHERE id= @rid";
+
             para = factory.CreateParameter();
-            para.ParameterName = "rid";
+            para.ParameterName = getParameterName("rid");
             para.DbType = DbType.Int32;
             para.Value = id;
             cmd.Parameters.Add(para);
@@ -219,12 +278,17 @@ namespace WebForm.DAL
         public Recipe GetRecipe(int recipeId)
         {
             DbCommand cmd = factory.CreateCommand();
-            cmd.CommandText = "Select * from RR_RECIPE WHERE id= :rid";
+
+            if (provider == ServerType.Oracle)
+                cmd.CommandText = "Select * from RR_RECIPE WHERE id= :rid";
+            if (provider == ServerType.SQLServer)
+                cmd.CommandText = "Select * from RR_RECIPE WHERE id= @rid";
+
             cmd.Connection = getConnection();
             cmd.CommandType = CommandType.Text;
 
             DbParameter para = factory.CreateParameter();
-            para.ParameterName = "rid";
+            para.ParameterName = getParameterName("rid");
             para.DbType = DbType.Int32;
             para.Value = recipeId;
             cmd.Parameters.Add(para);
@@ -233,7 +297,8 @@ namespace WebForm.DAL
             Recipe r = null;
             if (reader != null && reader.Read())
             {
-                r = GetRecipe(reader);
+                //must get Ingredients at this time
+                r = GetRecipe(reader, true);
             }
             return r;
 
@@ -242,8 +307,9 @@ namespace WebForm.DAL
         /// return a recipe object from a reader recorder
         /// </summary>
         /// <param name="reader"></param>
+        /// <param name="getIngredients">Indicate weather get Ingredients collection, if false then does not do it for saving time</param>
         /// <returns></returns>
-        private Recipe GetRecipe(DbDataReader reader)
+        private Recipe GetRecipe(DbDataReader reader, bool getIngredients)
         {
             return new Recipe
             {
@@ -254,32 +320,39 @@ namespace WebForm.DAL
                 submitBy = reader["submitby"].ToString(),
                 id = int.Parse(reader["id"].ToString()),
                 numberOfServings = int.Parse(reader["numberofservings"].ToString()),
-                ingredients = GetIngredients(int.Parse(reader["id"].ToString()))
+                ingredients = getIngredients ? GetIngredients(int.Parse(reader["id"].ToString())) : null
             };
         }
 
         /// <summary>
         /// Get all recipes
         /// </summary>
+        /// <param name="getIngredients">Indicate weather get Ingredients collection, if false then does not do it for saving time</param>
         /// <returns></returns>
-        public List<Recipe> GetRecipes()
+        public List<Recipe> GetRecipes(bool getIngredients)
         {
             DbCommand cmd = factory.CreateCommand();
             cmd.CommandText = "Select * from RR_RECIPE";
             cmd.Connection = getConnection();
             cmd.CommandType = CommandType.Text;
-            return GetRecipes(cmd);
+            return GetRecipes(cmd, getIngredients);
         }
 
         //get all Recipes recorder from a DbCommand
-        public List<Recipe> GetRecipes(DbCommand cmd)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="getIngredients">Indicate weather get Ingredients collection, if false then does not do it for saving time</param>
+        /// <returns></returns>
+        public List<Recipe> GetRecipes(DbCommand cmd, bool getIngredients)
         {
 
             DbDataReader reader = cmd.ExecuteReader();
             List<Recipe> recipes = new List<Recipe>();
             while (reader.Read())
             {
-                recipes.Add(GetRecipe(reader));
+                recipes.Add(GetRecipe(reader, getIngredients));
             }
             reader.Close();
             return recipes;
@@ -295,11 +368,16 @@ namespace WebForm.DAL
             List<Ingredient> Ingredients = new List<Ingredient>();
 
             DbCommand cmd = factory.CreateCommand();
-            cmd.CommandText = "Select * from rr_ingredient where recipeid= :recipeid";
+
+            if (provider == ServerType.Oracle)
+                cmd.CommandText = "Select * from rr_ingredient where recipeid= :recipeid";
+            if (provider == ServerType.SQLServer)
+                cmd.CommandText = "Select * from rr_ingredient where recipeid= @recipeid";
+
             cmd.Connection = getConnection();
 
             DbParameter para = factory.CreateParameter();
-            para.ParameterName = "recipeid";
+            para.ParameterName = getParameterName("recipeid");
             para.DbType = DbType.Int32;
             para.Value = recipeId;
             cmd.Parameters.Add(para);
@@ -309,7 +387,7 @@ namespace WebForm.DAL
             {
                 Ingredients.Add(new Ingredient
                 {
-                    
+
                     id = Convert.ToInt32(reader["id"].ToString()),
                     name = reader["name"].ToString(),
                     quantity = reader["quantity"].ToString(),
@@ -327,32 +405,35 @@ namespace WebForm.DAL
         /// <param name="submitBy"></param>
         /// <param name="category"></param>
         /// <param name="ingredientName"></param>
+        /// <param name="getIngredients">Indicate weather get Ingredients collection, if false then does not do it for saving time</param>
         /// <returns></returns>
-        public List<Recipe> GetRecipes(string submitBy, string category, string ingredientName)
+        public List<Recipe> GetRecipes(string submitBy, string category, string ingredientName, bool getIngredients = false)
         {
             string sql = "Select * from RR_RECIPE";
             DbCommand cmd = factory.CreateCommand();
 
             DbParameter parasSubmitby = factory.CreateParameter();
-            parasSubmitby.ParameterName = "submitby";
+            parasSubmitby.ParameterName = getParameterName("submitby");
             parasSubmitby.Value = submitBy;
 
             DbParameter parasCategory = factory.CreateParameter();
-            parasCategory.ParameterName = "category";
+            parasCategory.ParameterName = getParameterName("category");
             parasCategory.Value = category;
 
             DbParameter parasIngredientName = factory.CreateParameter();
-            parasIngredientName.ParameterName = "ingredientName";
+            parasIngredientName.ParameterName = getParameterName("ingredientName");
             parasIngredientName.Value = ingredientName;
 
             if (submitBy != null)
             {
                 cmd.Parameters.Add(parasSubmitby);
-                sql += " WHERE submitby like '%' || :submitby || '%'";
+                if (provider == ServerType.Oracle) sql += " WHERE submitby like '%' || :submitby || '%'";
+                if (provider == ServerType.SQLServer) sql += " WHERE submitby like '%' + @submitby + '%'";
+
                 if (category != null)
                 {
-                    sql += "  AND category like '%' || :category || '%'";
-
+                    if (provider == ServerType.Oracle) sql += "  AND category like '%' || :category || '%'";
+                    if (provider == ServerType.SQLServer) sql += "  AND category like '%' + @category + '%'";
                     cmd.Parameters.Add(parasCategory);
                 }
             }
@@ -360,7 +441,8 @@ namespace WebForm.DAL
             {
                 if (category != null)
                 {
-                    sql += " WHERE category like '%' || :category || '%'";
+                    if (provider == ServerType.Oracle) sql += " WHERE category like '%' || :category || '%'";
+                    if (provider == ServerType.SQLServer) sql += " WHERE category like '%' + @category + '%'";
                     cmd.Parameters.Add(parasCategory);
                 }
             }
@@ -376,12 +458,13 @@ namespace WebForm.DAL
                     sql += " WHERE ";
                 }
                 cmd.Parameters.Add(parasIngredientName);
-                sql += "id in (SELECT recipeid from rr_ingredient where name like '%' || :ingredientname || '%')";
+                if (provider == ServerType.Oracle) sql += "id in (SELECT recipeid from rr_ingredient where name like '%' || :ingredientname || '%')";
+                if (provider == ServerType.SQLServer) sql += "id in (SELECT recipeid from rr_ingredient where name like '%' + @ingredientname + '%')";
             }
             cmd.CommandText = sql;
             cmd.Connection = getConnection();
             cmd.CommandType = CommandType.Text;
-            return GetRecipes(cmd);
+            return GetRecipes(cmd, getIngredients);
         }
 
         /// <summary>
@@ -393,5 +476,24 @@ namespace WebForm.DAL
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// get all recipes list, but does not get the collection of Ingredients
+        /// </summary>
+        /// <returns></returns>
+        public List<Recipe> GetRecipes()
+        {
+            return GetRecipes(false);
+        }
+        /// <summary>
+        /// search by the three condition, but does not get the collection of ingredients
+        /// </summary>
+        /// <param name="submitBy"></param>
+        /// <param name="category"></param>
+        /// <param name="ingredientName"></param>
+        /// <returns></returns>
+        public List<Recipe> GetRecipes(string submitBy, string category, string ingredientName)
+        {
+            return GetRecipes(submitBy, category, ingredientName, false);
+        }
     }
 }

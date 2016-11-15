@@ -158,6 +158,11 @@ namespace WebForm.Web
             {
                 uc.Clear();
             }
+            divMessage.Attributes.Remove("class");
+            divMessage.Attributes.Add("class", "hidden alert-success");
+            divMessage2.Attributes.Remove("class");
+            divMessage2.Attributes.Add("class", "hidden alert-success");
+
         }
 
         //Add 1 for index value of viewstate 

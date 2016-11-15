@@ -9,7 +9,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
     <div class="container">
-        <div class=" hidden alert-success" runat="server" id="divMessage"></div>
+        <div class="hidden alert-success" runat="server" id="divMessage"></div>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><span class="glyphicon glyphicon-plus"></span>&nbsp;Add Recipe</h3>

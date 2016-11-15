@@ -4,13 +4,14 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Configuration;
 /*
    * Author: Luke Lu
    * Student ID: 300804279
    * Course: COMP 229
    */
 namespace WebForm.Web
-{ 
+{
     public partial class Setup : BasePage
     {
         protected void Page_Load(object sender, EventArgs e)
@@ -26,6 +27,23 @@ namespace WebForm.Web
                         rdLight.Checked = true;
                         break;
                 }
+
+                for (int i= 0;i < ConfigurationManager.ConnectionStrings.Count; i++)
+                {
+                    if (ConfigurationManager.ConnectionStrings[i].Name.StartsWith("My-"))
+                        rblDataServer.Items.Add(new ListItem
+                        {
+                            Text = ConfigurationManager.ConnectionStrings[i].Name.Substring(3),
+                            Value= ConfigurationManager.ConnectionStrings[i].Name
+                        });
+                }
+                rblDataServer.SelectedValue = (string)Session["CurrentConnectionStringName"];
+                if (Convert.ToBoolean(Request.QueryString["save"]))
+                {
+                    divMessage.Attributes.Remove("class");
+                    divMessage.Attributes.Add("class", "alert alert-success");
+                    divMessage.InnerText = "Settings were saved successfully.";
+                }
             }
         }
 
@@ -35,9 +53,11 @@ namespace WebForm.Web
             { Session["Theme"] = "Dark"; }
             else
             { Session["Theme"] = "Light"; }
-            Response.Redirect("~/Setup.aspx");
+            Session["CurrentConnectionStringName"] = rblDataServer.SelectedValue;
+            Session["CurrentConnectionStringNameChanged"] = true;
+            Response.Redirect("~/Setup.aspx?save=true");
         }
 
-
+      
     }
 }
