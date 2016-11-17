@@ -212,8 +212,11 @@ namespace WebForm.DAL
                  * INSERT Statement
                  */
 
-                cmd.CommandText = GetSQLStatement("INSERT INTO RR_INGREDIENT (id,name,quantity,unit,recipeid) " +
-                    " VALUES (SQ_INGREDIENT_ID.NEXTVAL, :name, :quantity, :unit, :recipeid)");
+                cmd.CommandText = "INSERT INTO RR_INGREDIENT (id, name,quantity,unit,recipeid) " +
+                    " VALUES (SQ_INGREDIENT_ID.NEXTVAL, :name, :quantity, :unit, :recipeid)";
+                if (provider == ServerType.SQLServer)
+                    cmd.CommandText = "INSERT INTO RR_INGREDIENT (name,quantity,unit,recipeid) " +
+                    " VALUES (@name, @quantity, @unit, @recipeid)";
                 para = factory.CreateParameter();
                 para.ParameterName = getParameterName("name");
                 para.Value = ing.name;
@@ -532,7 +535,7 @@ namespace WebForm.DAL
             cmd.ExecuteNonQuery();
 
             cmd = factory.CreateCommand();
-            cmd.CommandText =GetSQLStatement("DELETE FROM RR_INGREDIENT WHERE recipeid = :v_recipeid");
+            cmd.CommandText = GetSQLStatement("DELETE FROM RR_INGREDIENT WHERE recipeid = :v_recipeid");
             cmd.CommandType = CommandType.Text;
             cmd.Connection = getConnection();
 
@@ -549,7 +552,7 @@ namespace WebForm.DAL
             foreach (Ingredient ing in r.ingredients)
             {
                 DbCommand cmd2 = factory.CreateCommand();
-                
+
                 cmd2.Connection = getConnection();
                 cmd2.CommandType = CommandType.StoredProcedure;
                 cmd2.CommandText = "UPDATE_INGREDIENT_SP";
