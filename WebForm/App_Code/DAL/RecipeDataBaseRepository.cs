@@ -105,6 +105,18 @@ namespace WebForm.DAL
             }
         }
 
+        private string GetSQLStatement(string sql)
+        {
+            if (provider == ServerType.SQLServer)
+            {
+                return sql.Replace(":", "@").Replace("||", "+");
+            }
+            else
+            {
+                return sql;
+            }
+        }
+
         /// <summary>
         /// insert a recipe record to database
         /// </summary>
@@ -200,10 +212,8 @@ namespace WebForm.DAL
                  * INSERT Statement
                  */
 
-                if (provider == ServerType.Oracle)
-                    cmd.CommandText = "INSERT INTO RR_INGREDIENT (id,name,quantity,unit,recipeid) VALUES (SQ_INGREDIENT_ID.NEXTVAL, :name, :quantity, :unit, :recipeid)";
-                if (provider == ServerType.SQLServer)
-                    cmd.CommandText = "INSERT INTO RR_INGREDIENT (name,quantity,unit,recipeid) VALUES (@name, @quantity, @unit, @recipeid)";
+                cmd.CommandText = GetSQLStatement("INSERT INTO RR_INGREDIENT (id,name,quantity,unit,recipeid) " +
+                    " VALUES (SQ_INGREDIENT_ID.NEXTVAL, :name, :quantity, :unit, :recipeid)");
                 para = factory.CreateParameter();
                 para.ParameterName = getParameterName("name");
                 para.Value = ing.name;
@@ -242,10 +252,7 @@ namespace WebForm.DAL
         {
             DbCommand cmd = factory.CreateCommand();
 
-            if (provider == ServerType.Oracle)
-                cmd.CommandText = "DELETE FROM rr_ingredient WHERE recipeid= :recipeid";
-            if (provider == ServerType.SQLServer)
-                cmd.CommandText = "DELETE FROM rr_ingredient WHERE recipeid= @recipeid";
+            cmd.CommandText = GetSQLStatement("DELETE FROM rr_ingredient WHERE recipeid= :recipeid");
 
             cmd.Connection = getConnection();
             cmd.CommandType = CommandType.Text;
@@ -261,10 +268,7 @@ namespace WebForm.DAL
             cmd = factory.CreateCommand();
             cmd.Connection = getConnection();
 
-            if (provider == ServerType.Oracle)
-                cmd.CommandText = "DELETE FROM rr_recipe WHERE id= :rid";
-            if (provider == ServerType.SQLServer)
-                cmd.CommandText = "DELETE FROM rr_recipe WHERE id= @rid";
+            cmd.CommandText = GetSQLStatement("DELETE FROM rr_recipe WHERE id= :rid");
 
             para = factory.CreateParameter();
             para.ParameterName = getParameterName("rid");
@@ -285,10 +289,7 @@ namespace WebForm.DAL
         {
             DbCommand cmd = factory.CreateCommand();
 
-            if (provider == ServerType.Oracle)
-                cmd.CommandText = "Select * from RR_RECIPE WHERE id= :rid";
-            if (provider == ServerType.SQLServer)
-                cmd.CommandText = "Select * from RR_RECIPE WHERE id= @rid";
+            cmd.CommandText = GetSQLStatement("Select * from RR_RECIPE WHERE id= :rid");
 
             cmd.Connection = getConnection();
             cmd.CommandType = CommandType.Text;
@@ -369,16 +370,13 @@ namespace WebForm.DAL
         /// </summary>
         /// <param name="recipeId"></param>
         /// <returns></returns>
-        private List<Ingredient> GetIngredients(int recipeId)
+        public List<Ingredient> GetIngredients(int recipeId)
         {
             List<Ingredient> Ingredients = new List<Ingredient>();
 
             DbCommand cmd = factory.CreateCommand();
 
-            if (provider == ServerType.Oracle)
-                cmd.CommandText = "Select * from rr_ingredient where recipeid= :recipeid";
-            if (provider == ServerType.SQLServer)
-                cmd.CommandText = "Select * from rr_ingredient where recipeid= @recipeid";
+            cmd.CommandText = GetSQLStatement("Select * from rr_ingredient where recipeid= :recipeid");
 
             cmd.Connection = getConnection();
 
@@ -433,13 +431,11 @@ namespace WebForm.DAL
             if (submitBy != null)
             {
                 cmd.Parameters.Add(parasSubmitby);
-                if (provider == ServerType.Oracle) sql += " WHERE submitby like '%' || :submitby || '%'";
-                if (provider == ServerType.SQLServer) sql += " WHERE submitby like '%' + @submitby + '%'";
+                sql += " WHERE submitby like '%' || :submitby || '%'";
 
                 if (category != null)
                 {
-                    if (provider == ServerType.Oracle) sql += "  AND category like '%' || :category || '%'";
-                    if (provider == ServerType.SQLServer) sql += "  AND category like '%' + @category + '%'";
+                    sql += "  AND category like '%' || :category || '%'";
                     cmd.Parameters.Add(parasCategory);
                 }
             }
@@ -447,8 +443,7 @@ namespace WebForm.DAL
             {
                 if (category != null)
                 {
-                    if (provider == ServerType.Oracle) sql += " WHERE category like '%' || :category || '%'";
-                    if (provider == ServerType.SQLServer) sql += " WHERE category like '%' + @category + '%'";
+                    sql += " WHERE category like '%' || :category || '%'";
                     cmd.Parameters.Add(parasCategory);
                 }
             }
@@ -464,10 +459,9 @@ namespace WebForm.DAL
                     sql += " WHERE ";
                 }
                 cmd.Parameters.Add(parasIngredientName);
-                if (provider == ServerType.Oracle) sql += "id in (SELECT recipeid from rr_ingredient where name like '%' || :ingredientname || '%')";
-                if (provider == ServerType.SQLServer) sql += "id in (SELECT recipeid from rr_ingredient where name like '%' + @ingredientname + '%')";
+                sql += "id in (SELECT recipeid from rr_ingredient where name like '%' || :ingredientname || '%')";
             }
-            cmd.CommandText = sql;
+            cmd.CommandText = GetSQLStatement(sql);
             cmd.Connection = getConnection();
             cmd.CommandType = CommandType.Text;
             return GetRecipes(cmd, getIngredients);
@@ -479,7 +473,119 @@ namespace WebForm.DAL
         /// <param name="r"></param>
         public void UpdateRecipe(Recipe r)
         {
-            throw new NotImplementedException();
+            DbCommand cmd = factory.CreateCommand();
+            cmd.Connection = getConnection();
+
+            cmd.CommandText = GetSQLStatement("UPDATE RR_RECIPE " +
+                                  "SET name = :v_name, " +
+                                  "category= :v_category, " +
+                                  "cookingtime= :v_cookingtime, " +
+                                  "numberOfServings= :v_numberOfServings, " +
+                                  "description = :v_description " +
+                                  "WHERE id = :v_recipeid");
+
+            cmd.CommandType = CommandType.Text;
+
+
+
+            //start create recipe recorder
+
+
+            DbParameter para = factory.CreateParameter();
+            para.ParameterName = getParameterName("v_name");
+            para.DbType = DbType.String;
+            para.Value = r.name;
+            cmd.Parameters.Add(para);
+
+            para = factory.CreateParameter();
+            para.ParameterName = getParameterName("v_category");
+            para.DbType = DbType.String;
+            para.Value = r.category;
+            cmd.Parameters.Add(para);
+
+            para = factory.CreateParameter();
+            para.ParameterName = getParameterName("v_cookingTime");
+            para.DbType = DbType.Int32;
+            para.Value = r.cookingTime;
+            cmd.Parameters.Add(para);
+
+            para = factory.CreateParameter();
+            para.ParameterName = getParameterName("v_numberOfServings");
+            para.DbType = DbType.Int32;
+            para.Value = r.numberOfServings;
+            cmd.Parameters.Add(para);
+
+            para = factory.CreateParameter();
+            para.ParameterName = getParameterName("v_description");
+            para.Value = r.description;
+            para.DbType = DbType.String;
+            cmd.Parameters.Add(para);
+
+            para = factory.CreateParameter();
+            para.ParameterName = getParameterName("v_recipeid");
+            para.Value = r.id;
+            para.DbType = DbType.Int32;
+            cmd.Parameters.Add(para);
+
+
+
+            cmd.ExecuteNonQuery();
+
+            cmd = factory.CreateCommand();
+            cmd.CommandText =GetSQLStatement("DELETE FROM RR_INGREDIENT WHERE recipeid = :v_recipeid");
+            cmd.CommandType = CommandType.Text;
+            cmd.Connection = getConnection();
+
+            para = factory.CreateParameter();
+            para.ParameterName = getParameterName("v_recipeid");
+            para.DbType = DbType.Int32;
+            para.Value = r.id;
+            cmd.Parameters.Add(para);
+
+            cmd.ExecuteNonQuery();
+
+            //start create ingredients recorders
+
+            foreach (Ingredient ing in r.ingredients)
+            {
+                DbCommand cmd2 = factory.CreateCommand();
+                
+                cmd2.Connection = getConnection();
+                cmd2.CommandType = CommandType.StoredProcedure;
+                cmd2.CommandText = "UPDATE_INGREDIENT_SP";
+
+                para = factory.CreateParameter();
+                para.ParameterName = getParameterName("v_id");
+                para.DbType = DbType.Int32;
+                para.Value = ing.id;
+                cmd2.Parameters.Add(para);
+
+                para = factory.CreateParameter();
+                para.ParameterName = getParameterName("v_name");
+                para.Value = ing.name;
+                para.DbType = DbType.String;
+                cmd2.Parameters.Add(para);
+
+                para = factory.CreateParameter();
+                para.ParameterName = getParameterName("v_quantity");
+                para.DbType = DbType.String;
+                para.Value = ing.quantity;
+                cmd2.Parameters.Add(para);
+
+                para = factory.CreateParameter();
+                para.ParameterName = "v_unit";
+                para.DbType = DbType.String;
+                para.Value = ing.unit;
+                cmd2.Parameters.Add(para);
+
+                para = factory.CreateParameter();
+                para.ParameterName = getParameterName("v_recipeid");
+                para.DbType = DbType.Int32;
+                para.Value = r.id;
+                cmd2.Parameters.Add(para);
+
+                cmd2.ExecuteNonQuery();
+            }
         }
 
         /// <summary>
@@ -500,6 +606,21 @@ namespace WebForm.DAL
         public List<Recipe> GetRecipes(string submitBy, string category, string ingredientName)
         {
             return GetRecipes(submitBy, category, ingredientName, false);
+        }
+
+        public List<string> GetCategories()
+        {
+            DbCommand cmd = factory.CreateCommand();
+            cmd.CommandText = "Select Category from RR_RECIPE GROUP BY Category Order By Category";
+            cmd.Connection = getConnection();
+            cmd.CommandType = CommandType.Text;
+            DbDataReader reader = cmd.ExecuteReader();
+            List<string> listCategories = new List<string>();
+            while (reader.Read())
+            {
+                listCategories.Add(reader[0].ToString());
+            }
+            return listCategories;
         }
     }
 }

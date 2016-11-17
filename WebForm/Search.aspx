@@ -49,7 +49,7 @@
                     <ItemTemplate>
                         <tr>
                             <td>
-                                <a href='details.aspx?id=<%# Eval("id") %>' data-target='#myModal<%# Eval("id") %>' data-toggle="modal"><%# Eval("name") %></a>
+                                <a href='detailsmodal.aspx?id=<%# Eval("id") %>' data-target='#myModal<%# Eval("id") %>' data-toggle="modal"><%# Eval("name") %></a>
                                 <div class="modal fade" id='myModal<%# Eval("id") %>' role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">

@@ -65,7 +65,35 @@ BEGIN
   select sq_recipe_id.currval into v_recipeid from dual;
 END INSERT_RECIPE_SP;
 
-
+CREATE OR REPLACE
+PROCEDURE UPDATE_INGREDIENT_SP (
+  v_id IN NUMBER, 
+  v_name IN VARCHAR2, 
+  v_quantity IN VARCHAR2, 
+  v_unit IN VARCHAR2, 
+  v_recipeid IN NUMBER)
+IS
+  v_count number(5);
+BEGIN 
+  
+		SELECT Count(*) 
+		INTO v_count
+		FROM rr_ingredient
+		WHERE id= v_id;
+	if v_count = 0 then
+		INSERT INTO rr_ingredient
+		(id,name,quantity,unit,recipeid)
+		Values 
+		(sq_ingredient_id.nextval,v_name,v_quantity,v_unit,v_recipeid);
+	else
+		UPDATE rr_ingredient
+		SET name=v_name,
+      quantity=v_quantity,
+			unit=v_unit,
+			recipeid=v_recipeid
+		where id=v_id;
+	end if;
+END UPDATE_INGREDIENT_SP;
 
 
 Insert into RR_RECIPE (ID,NAME,SUBMITBY,CATEGORY,COOKINGTIME,NUMBEROFSERVINGS,DESCRIPTION) values (sq_recipe_id.nextval,'Oracle-AWS','Luke','Breakfast',20,1,'Indicate this database is Oracle Database which is running on Amazon Web Service.');

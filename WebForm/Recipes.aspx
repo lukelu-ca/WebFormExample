@@ -29,14 +29,14 @@
                     <ItemTemplate>
                         <tr>
                             <td>
-                                <a href='details.aspx?id=<%# Eval("id") %>' data-target='#myModal<%# Eval("id") %>' data-toggle="modal"><%# Eval("name") %></a>
-                                <div class="modal fade" id='myModal<%# Eval("id") %>' role="dialog">
+                                <a href='details.aspx?id=<%# Eval("id") %>'><%# Eval("name") %></a>
+<%--                                <div class="modal fade" id='myModal<%# Eval("id") %>' role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="btn-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>Loading...</div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>--%>
                             </td>
                             <td>
                                 <asp:Label ID="submitByLabel" runat="server" Text='<%# Eval("submitBy") %>' />

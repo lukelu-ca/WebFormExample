@@ -3,8 +3,11 @@
  * Student ID: 300804279
  * Course: COMP 229
  */
+using System;
+
 namespace WebForm.Model
 {
+    [Serializable]
     /// <summary>
     /// Summary description for Ingredient
     /// </summary>

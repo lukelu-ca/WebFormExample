@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 /*
  * Author: Luke Lu
@@ -7,6 +8,7 @@
  */
 namespace WebForm.Model
 {
+    [Serializable]
     /// <summary>
     /// Summary description for Recipe
     /// </summary>

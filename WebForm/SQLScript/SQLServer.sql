@@ -53,7 +53,43 @@ BEGIN
   SELECT @v_RecipeID = SCOPE_IDENTITY();
   SELECT @v_RecipeID AS id;
   RETURN
-END
+END;
+
+IF ( OBJECT_ID('dbo.UPDATE_INGREDIENT_SP') IS NOT NULL ) 
+   DROP PROCEDURE dbo.UPDATE_INGREDIENT_SP
+GO
+
+CREATE
+PROCEDURE UPDATE_INGREDIENT_SP (
+  @v_id int, 
+  @v_name nvarchar(50), 
+  @v_quantity nvarchar(50), 
+  @v_unit nvarchar(50), 
+  @v_recipeid INT)
+AS
+BEGIN 
+	SET NOCOUNT ON;
+	Declare @v_count int;
+ 		SELECT @v_count=Count(*) 
+		FROM rr_ingredient
+		WHERE id= @v_id;
+
+	if @v_count = 0 
+		INSERT INTO rr_ingredient
+		(name,quantity,unit,recipeid)
+		Values 
+		(@v_name,@v_quantity,@v_unit,@v_recipeid);
+	else
+		UPDATE rr_ingredient
+		SET name=@v_name,
+	   quantity=@v_quantity,
+	   unit=@v_unit,
+	   recipeid=@v_recipeid
+		where id=@v_id;
+
+		
+	RETURN;
+END;
 
 
 Insert into RR_RECIPE (NAME,SUBMITBY,CATEGORY,COOKINGTIME,NUMBEROFSERVINGS,DESCRIPTION) values ('Microsoft Azure SQL Server','Luke','Main dishes',45,1,'Indicate this database is Oracle Database which is running on Microsoft Azure SQL Server.');

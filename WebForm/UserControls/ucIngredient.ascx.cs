@@ -6,7 +6,8 @@ using WebForm.Model;
      * Course: COMP 229
      */
 namespace WebForm.Web
-{   
+{
+    [Serializable]
     public partial class ucIngredient : System.Web.UI.UserControl
     {
         //The total rows number in the parent control
@@ -17,10 +18,23 @@ namespace WebForm.Web
 
         //Ingredient class object
         private Ingredient itemValue;
-
         public event EventHandler Item_Add;
         public event EventHandler Item_Delete;
 
+        public int id
+        {
+            get
+            {
+                if (hfID.Value == string.Empty)
+                    return 0;
+                else
+                    return Convert.ToInt32(hfID.Value);
+            }
+            set
+            {
+                hfID.Value = value.ToString();
+            }
+        }
         //return txtName
         public string Name
         {
@@ -45,7 +59,7 @@ namespace WebForm.Web
 
             set
             {
-                txtQuantity.Text = value.ToString();
+                txtQuantity.Text = value;
             }
         }
 
@@ -61,7 +75,6 @@ namespace WebForm.Web
                 txtUnit.Text = value;
             }
         }
-
         //return or set the object of ingredient
         public Ingredient ItemValue
         {
@@ -71,6 +84,7 @@ namespace WebForm.Web
                 {
                     itemValue = new Ingredient();
                 }
+                itemValue.id = id;
                 itemValue.name = Name;
                 itemValue.quantity = Quantity;
                 itemValue.unit = Unit;
@@ -79,6 +93,7 @@ namespace WebForm.Web
             set
             {
                 itemValue = value;
+                id = itemValue.id;
                 Name = itemValue.name;
                 Quantity = itemValue.quantity;
                 Unit = itemValue.unit;
