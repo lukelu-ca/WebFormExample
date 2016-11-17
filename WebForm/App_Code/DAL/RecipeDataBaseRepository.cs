@@ -124,7 +124,10 @@ namespace WebForm.DAL
         public void AddRecipe(Recipe r)
         {
             DbCommand cmd = factory.CreateCommand();
-            cmd.Connection = getConnection();
+            DbConnection conn = getConnection();
+            DbTransaction trans = conn.BeginTransaction();
+            cmd.Connection = conn;
+            cmd.Transaction = trans;
 
             //execute procedure
             /*  PROCDUE CONTENT:
@@ -193,55 +196,73 @@ namespace WebForm.DAL
             cmd.Parameters.Add(para);
 
 
-
-            cmd.ExecuteNonQuery();
-
-            //end of create recipe record
-
-            //get recipeid from  sequence currval
-            int recipeID = int.Parse(cmd.Parameters[getParameterName("v_recipeid")].Value.ToString());
-
-            //start create ingredients recorders
-
-            foreach (Ingredient ing in r.ingredients)
+            try
             {
-                cmd = factory.CreateCommand();
-                cmd.Connection = getConnection();
-                cmd.CommandType = CommandType.Text;
-                /*
-                 * INSERT Statement
-                 */
-
-                cmd.CommandText = "INSERT INTO RR_INGREDIENT (id, name,quantity,unit,recipeid) " +
-                    " VALUES (SQ_INGREDIENT_ID.NEXTVAL, :name, :quantity, :unit, :recipeid)";
-                if (provider == ServerType.SQLServer)
-                    cmd.CommandText = "INSERT INTO RR_INGREDIENT (name,quantity,unit,recipeid) " +
-                    " VALUES (@name, @quantity, @unit, @recipeid)";
-                para = factory.CreateParameter();
-                para.ParameterName = getParameterName("name");
-                para.Value = ing.name;
-                para.DbType = DbType.String;
-                cmd.Parameters.Add(para);
-
-                para = factory.CreateParameter();
-                para.ParameterName = getParameterName("quantity");
-                para.DbType = DbType.String;
-                para.Value = ing.quantity;
-                cmd.Parameters.Add(para);
-
-                para = factory.CreateParameter();
-                para.ParameterName = "unit";
-                para.DbType = DbType.String;
-                para.Value = ing.unit;
-                cmd.Parameters.Add(para);
-
-                para = factory.CreateParameter();
-                para.ParameterName = getParameterName("recipeid");
-                para.DbType = DbType.Int32;
-                para.Value = recipeID;
-                cmd.Parameters.Add(para);
-
                 cmd.ExecuteNonQuery();
+
+                //end of create recipe record
+
+                //get recipeid from  sequence currval
+                int recipeID = int.Parse(cmd.Parameters[getParameterName("v_recipeid")].Value.ToString());
+
+                //start create ingredients recorders
+
+                foreach (Ingredient ing in r.ingredients)
+                {
+                   DbCommand cmd2 = factory.CreateCommand();
+
+                    cmd2.Connection = conn;
+                    cmd2.Transaction = trans;
+                    cmd2.CommandType = CommandType.Text;
+                    /*
+                     * INSERT Statement
+                     */
+
+                    cmd2.CommandText = "INSERT INTO RR_INGREDIENT (id, name,quantity,unit,recipeid) " +
+                        " VALUES (SQ_INGREDIENT_ID.NEXTVAL, :name, :quantity, :unit, :recipeid)";
+                    if (provider == ServerType.SQLServer)
+                        cmd2.CommandText = "INSERT INTO RR_INGREDIENT (name,quantity,unit,recipeid) " +
+                        " VALUES (@name, @quantity, @unit, @recipeid)";
+                    para = factory.CreateParameter();
+                    para.ParameterName = getParameterName("name");
+                    para.Value = ing.name;
+                    para.DbType = DbType.String;
+                    cmd2.Parameters.Add(para);
+
+                    para = factory.CreateParameter();
+                    para.ParameterName = getParameterName("quantity");
+                    para.DbType = DbType.String;
+                    para.Value = ing.quantity;
+                    cmd2.Parameters.Add(para);
+
+                    para = factory.CreateParameter();
+                    para.ParameterName = "unit";
+                    para.DbType = DbType.String;
+                    para.Value = ing.unit;
+                    cmd2.Parameters.Add(para);
+
+                    para = factory.CreateParameter();
+                    para.ParameterName = getParameterName("recipeid");
+                    para.DbType = DbType.Int32;
+                    para.Value = recipeID;
+                    cmd2.Parameters.Add(para);
+
+                    cmd2.ExecuteNonQuery();
+                    trans.Commit();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    trans.Commit();
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                throw ex;
             }
 
         }
@@ -253,12 +274,17 @@ namespace WebForm.DAL
         /// <param name="id"></param>
         public void DeleteRecipe(int id)
         {
+
             DbCommand cmd = factory.CreateCommand();
+            DbConnection conn = getConnection();
+            //Create Transaction.
+            DbTransaction trans = conn.BeginTransaction();
 
             cmd.CommandText = GetSQLStatement("DELETE FROM rr_ingredient WHERE recipeid= :recipeid");
-
-            cmd.Connection = getConnection();
+            cmd.Connection = conn;
             cmd.CommandType = CommandType.Text;
+            //set transaction
+            cmd.Transaction = trans;
 
             DbParameter para = factory.CreateParameter();
             para.ParameterName = getParameterName("recipeid");
@@ -266,19 +292,52 @@ namespace WebForm.DAL
             para.Value = id;
             cmd.Parameters.Add(para);
 
-            cmd.ExecuteNonQuery();
+            DbCommand cmd2 = factory.CreateCommand();
+            cmd2.Connection = conn;
 
-            cmd = factory.CreateCommand();
-            cmd.Connection = getConnection();
-
-            cmd.CommandText = GetSQLStatement("DELETE FROM rr_recipe WHERE id= :rid");
+            cmd2.CommandText = GetSQLStatement("DELETE FROM rr_recipe WHERE id= :rid");
 
             para = factory.CreateParameter();
             para.ParameterName = getParameterName("rid");
             para.DbType = DbType.Int32;
             para.Value = id;
-            cmd.Parameters.Add(para);
-            cmd.ExecuteNonQuery();
+            cmd2.Parameters.Add(para);
+            //set transaction
+            cmd2.Transaction = trans;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+
+                cmd2.ExecuteNonQuery();
+                trans.Commit();
+            }
+            catch (DbException exDb)
+            {
+                //Console.WriteLine("DbException.GetType: {0}", exDb.GetType());
+                //Console.WriteLine("DbException.Source: {0}", exDb.Source);
+                //Console.WriteLine("DbException.ErrorCode: {0}", exDb.ErrorCode);
+                //Console.WriteLine("DbException.Message: {0}", exDb.Message);
+                try
+                {
+                    //rollback when exception
+                    trans.Rollback();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                throw exDb;
+            }
+            // Handle all other exceptions.
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Exception.Message: {0}", ex.Message);
+                throw ex;
+            }
+
+
+
 
 
         }
@@ -477,8 +536,10 @@ namespace WebForm.DAL
         public void UpdateRecipe(Recipe r)
         {
             DbCommand cmd = factory.CreateCommand();
-            cmd.Connection = getConnection();
-
+            DbConnection conn = getConnection();
+            DbTransaction trans = conn.BeginTransaction();
+            cmd.Connection = conn;
+            cmd.Transaction = trans;
             cmd.CommandText = GetSQLStatement("UPDATE RR_RECIPE " +
                                   "SET name = :v_name, " +
                                   "category= :v_category, " +
@@ -486,7 +547,6 @@ namespace WebForm.DAL
                                   "numberOfServings= :v_numberOfServings, " +
                                   "description = :v_description " +
                                   "WHERE id = :v_recipeid");
-
             cmd.CommandType = CommandType.Text;
 
 
@@ -530,64 +590,78 @@ namespace WebForm.DAL
             para.DbType = DbType.Int32;
             cmd.Parameters.Add(para);
 
-
-
-            cmd.ExecuteNonQuery();
-
-            cmd = factory.CreateCommand();
-            cmd.CommandText = GetSQLStatement("DELETE FROM RR_INGREDIENT WHERE recipeid = :v_recipeid");
-            cmd.CommandType = CommandType.Text;
-            cmd.Connection = getConnection();
-
-            para = factory.CreateParameter();
-            para.ParameterName = getParameterName("v_recipeid");
-            para.DbType = DbType.Int32;
-            para.Value = r.id;
-            cmd.Parameters.Add(para);
-
-            cmd.ExecuteNonQuery();
-
-            //start create ingredients recorders
-
-            foreach (Ingredient ing in r.ingredients)
+            try
             {
-                DbCommand cmd2 = factory.CreateCommand();
+                cmd.ExecuteNonQuery();
 
-                cmd2.Connection = getConnection();
-                cmd2.CommandType = CommandType.StoredProcedure;
-                cmd2.CommandText = "UPDATE_INGREDIENT_SP";
-
-                para = factory.CreateParameter();
-                para.ParameterName = getParameterName("v_id");
-                para.DbType = DbType.Int32;
-                para.Value = ing.id;
-                cmd2.Parameters.Add(para);
-
-                para = factory.CreateParameter();
-                para.ParameterName = getParameterName("v_name");
-                para.Value = ing.name;
-                para.DbType = DbType.String;
-                cmd2.Parameters.Add(para);
-
-                para = factory.CreateParameter();
-                para.ParameterName = getParameterName("v_quantity");
-                para.DbType = DbType.String;
-                para.Value = ing.quantity;
-                cmd2.Parameters.Add(para);
-
-                para = factory.CreateParameter();
-                para.ParameterName = "v_unit";
-                para.DbType = DbType.String;
-                para.Value = ing.unit;
-                cmd2.Parameters.Add(para);
+                cmd = factory.CreateCommand();
+                cmd.CommandText = GetSQLStatement("DELETE FROM RR_INGREDIENT WHERE recipeid = :v_recipeid");
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = getConnection();
 
                 para = factory.CreateParameter();
                 para.ParameterName = getParameterName("v_recipeid");
                 para.DbType = DbType.Int32;
                 para.Value = r.id;
-                cmd2.Parameters.Add(para);
+                cmd.Parameters.Add(para);
 
-                cmd2.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+
+                //start create ingredients recorders
+
+                foreach (Ingredient ing in r.ingredients)
+                {
+                    DbCommand cmd2 = factory.CreateCommand();
+                    cmd2.Connection = conn;
+                    cmd2.Transaction = trans;
+                    cmd2.CommandType = CommandType.StoredProcedure;
+                    cmd2.CommandText = "UPDATE_INGREDIENT_SP";
+
+                    para = factory.CreateParameter();
+                    para.ParameterName = getParameterName("v_id");
+                    para.DbType = DbType.Int32;
+                    para.Value = ing.id;
+                    cmd2.Parameters.Add(para);
+
+                    para = factory.CreateParameter();
+                    para.ParameterName = getParameterName("v_name");
+                    para.Value = ing.name;
+                    para.DbType = DbType.String;
+                    cmd2.Parameters.Add(para);
+
+                    para = factory.CreateParameter();
+                    para.ParameterName = getParameterName("v_quantity");
+                    para.DbType = DbType.String;
+                    para.Value = ing.quantity;
+                    cmd2.Parameters.Add(para);
+
+                    para = factory.CreateParameter();
+                    para.ParameterName = "v_unit";
+                    para.DbType = DbType.String;
+                    para.Value = ing.unit;
+                    cmd2.Parameters.Add(para);
+
+                    para = factory.CreateParameter();
+                    para.ParameterName = getParameterName("v_recipeid");
+                    para.DbType = DbType.Int32;
+                    para.Value = r.id;
+                    cmd2.Parameters.Add(para);
+
+                    cmd2.ExecuteNonQuery();
+                }
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    trans.Rollback();
+                }
+                catch (Exception ex1)
+                {
+                    throw ex1;
+                }
+                throw ex;
             }
         }
 
