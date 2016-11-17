@@ -11,7 +11,6 @@
             This is an assignment project for the course COMP229 Advance Web Application Develop.<br />
         </p>
         <p>Download Assignment instructions: <a href='documents/Assignment1.pdf'>#1</a>, <a href='documents/Assignment1.pdf'>#2</a>, <a href='documents/Assignment1.pdf'>#3</a>, <a href='documents/Assignment1.pdf'>#4</a></p>
-        <p><a href="https://github.com/lukelu6666/WebFormExample" target="_blank">View source code on Github</a></p>
         <p>According the instructions, this project is using the below ASP.NET and HTML features. </p>
         <ul>
             <li>Create ASP.NET FORM Application</li>
@@ -28,8 +27,9 @@
             <li>Deploy application to Microsoft Azure</li>
             <li>Control Source Code through Github</li>
         </ul>
-
+        <a class="btn btn-primary btn-lg pull-right" href="https://github.com/lukelu6666/WebFormExample" target="_blank"> Get Source Code >>> </a>
     </div>
+
     <div class="row">
         <div class="col-md-4">
             <h3>About Luke</h3>
