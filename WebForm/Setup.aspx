@@ -6,7 +6,10 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <div class="container">
-        <div class="hidden alert-success" runat="server" id="divMessage"></div>
+        <div class="hidden alert-success" runat="server" id="divMessage">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span id="divMessageBody" runat="server">Settings were saved successfully.</span>
+        </div>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3><span class="glyphicon glyphicon-cog"></span>&nbsp;Select a theme</h3>
@@ -28,7 +31,7 @@
             </div>
             <div class="panel-body">
                 <div class="radio">
-                    <asp:RadioButtonList ID="rblDataServer" runat="server" ></asp:RadioButtonList>
+                    <asp:RadioButtonList ID="rblDataServer" runat="server"></asp:RadioButtonList>
                 </div>
             </div>
         </div>
@@ -41,8 +44,6 @@
 
 
     </div>
-
-
-
+    <script src="Scripts/AlterAutoHidden.js"></script>
 </asp:Content>
 

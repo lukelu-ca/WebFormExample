@@ -74,6 +74,6 @@
             <asp:ObjectDataSource ID="RecipeDataSource" runat="server" SelectMethod="GetRecipes" TypeName="WebForm.DAL.RecipeDataBaseRepository" DataObjectTypeName="WebForm.Model.Recipe"></asp:ObjectDataSource>
         </div>
     </div>
-
+    <script src="Scripts/AlterAutoHidden.js"></script>
 </asp:Content>
 

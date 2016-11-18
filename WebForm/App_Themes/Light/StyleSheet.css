@@ -40,6 +40,9 @@ footer {
     color: white;
 }
 
+.panel-footer {
+    background-color: #ecdbff;
+}
 .jumbotron {
     background-color: #ecdbff;
 }

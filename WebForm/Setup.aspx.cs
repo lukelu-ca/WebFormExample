@@ -45,7 +45,6 @@ namespace WebForm.Web
                 {
                     divMessage.Attributes.Remove("class");
                     divMessage.Attributes.Add("class", "alert alert-success");
-                    divMessage.InnerText = "Settings were saved successfully.";
                 }
             }
         }
