@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="AddRecipe.aspx.cs" Inherits="WebForm.Web.AddRecipe" %>
+﻿<%@ Page Title="" Language="C#"   Debug="true" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="AddRecipe.aspx.cs" Inherits="WebForm.Web.AddRecipe" %>
 
 <%@ Register Src="~/UserControls/ucListEditIngedient.ascx" TagPrefix="uc1" TagName="ucListEditIngedient" %>
 <%@ Register Src="~/UserControls/ucCategories.ascx" TagPrefix="uc1" TagName="ucCategories" %>
@@ -7,11 +7,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <title>Add Recipe</title>
-    <script type="text/javascript">
-        function validateTxtCategory(oSrc, args) {
-            args.IsValid = (args.Value.toString().trim() !="") && (args.Value.toString().trim().toLowerCase() != "other");
-        }
-    </script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 

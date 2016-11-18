@@ -69,6 +69,11 @@ namespace WebForm.Web
             list.Add("Other");
             ddlCategory.DataSource = list;
             ddlCategory.DataBind();
+            if (list.Count==0)
+            {
+                txtCategory.Visible = true;
+                cvTxtCategory.Visible = true;
+            }
         }
     }
 }
