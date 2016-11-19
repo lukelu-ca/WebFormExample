@@ -37,7 +37,7 @@ namespace WebForm.Web
                     Page.Theme = "Light";
                     break;
                 default:
-                    Page.Theme = "Dark";
+                    Page.Theme = "Default";
                     break;
             }
         }

@@ -58,8 +58,8 @@
                 </div>
                 <uc1:ucListEditIngedient runat="server" ID="ucListEditIngedient1" />
                 <div class="form-inline">
-                    <button id="btnAddRecipe" class="btn btn-primary" runat="server" onserverclick="btnAddRecipe_Click">&nbsp;&nbsp;<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Save&nbsp;&nbsp;</button>
-                    <button id="btnCancelRecipe" class="btn btn-default" runat="server" onserverclick="btnCancelRecipe_Click" causesvalidation="False">&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</button>
+                    <button id="btnAddRecipe" type="submit" class="btn btn-primary" runat="server" onserverclick="btnAddRecipe_Click">&nbsp;&nbsp;<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Save&nbsp;&nbsp;</button>
+                    <button id="btnCancelRecipe" type="reset" class="btn btn-default" runat="server" onserverclick="btnCancelRecipe_Click" causesvalidation="False">&nbsp;&nbsp;<span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;Cancel&nbsp;&nbsp;</button>
                 </div>
                 <div class="hidden alert-success" runat="server" id="divMessage2">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>

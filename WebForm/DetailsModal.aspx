@@ -36,7 +36,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table" runat="server" id="tbl">
+                    <table class="table  table-striped table-hover" runat="server" id="tbl">
                         <tr>
                             <th>Name</th>
                             <th>Quantity</th>

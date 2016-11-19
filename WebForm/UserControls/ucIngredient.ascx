@@ -12,7 +12,7 @@
     </div>
     
     <div class="col-sm-2">
-        <button id="btnDelete" runat="server" causesvalidation="False" onserverclick="btnDelete_Click" visible="True"><span class="glyphicon glyphicon-minus"></span></button>
-        <button id="btnAdd" runat="server" causesvalidation="False" onserverclick="btnAdd_Click" visible="False"><span class="glyphicon glyphicon-plus"></span></button>
+        <button id="btnDelete" runat="server" class="btn btn-default" causesvalidation="False" onserverclick="btnDelete_Click" visible="True"><span class="glyphicon glyphicon-minus"></span></button>
+        <button id="btnAdd" runat="server" class="btn btn-default" causesvalidation="False" onserverclick="btnAdd_Click" visible="False"><span class="glyphicon glyphicon-plus"></span></button>
     </div>
 </div>

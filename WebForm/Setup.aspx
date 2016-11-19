@@ -18,6 +18,7 @@
 
 
                 <div class="radio">
+                    <asp:RadioButton ID="rdDefault" runat="server" GroupName="rdTheme" Text="Default" /> <br />
                     <asp:RadioButton ID="rdDark" runat="server" GroupName="rdTheme" Text="Dark" /><br />
                     <asp:RadioButton ID="rdLight" runat="server" GroupName="rdTheme" Text="Light" />
                 </div>

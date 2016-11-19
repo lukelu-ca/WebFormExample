@@ -57,7 +57,7 @@
                         </tr>
                     </ItemTemplate>
                     <LayoutTemplate>
-                        <table class="table">
+                        <table class="table table-striped table-hover">
                             <tr runat="server">
                                 <th runat="server">Name</th>
                                 <th runat="server">Submi tBy</th>

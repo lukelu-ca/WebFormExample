@@ -27,6 +27,9 @@ namespace WebForm.Web
                     case "Light":
                         rdLight.Checked = true;
                         break;
+                    default:
+                        rdDefault.Checked = true;
+                        break;
                 }
 
                 for (int i = 0; i < ConfigurationManager.ConnectionStrings.Count; i++)
@@ -55,9 +58,13 @@ namespace WebForm.Web
             {
                 SetCookie("Theme", "Dark");
             }
-            else
+            else if(rdLight.Checked)
             {
                 SetCookie("Theme", "Light");
+            }
+            else
+            {
+                SetCookie("Theme", "Default");
             }
             SetCookie("CurrentConnectionStringName", rblDataServer.SelectedValue);
             Session["CurrentConnectionStringNameChanged"] = true;
