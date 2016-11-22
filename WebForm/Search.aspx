@@ -13,7 +13,7 @@
 
             <div class="panel-body form-horizontal">
                 <div class="form-group">
-                    <label class="control-label col-sm-2" for="txtSubmitBy">Submit By:</label>
+                    <label class="control-label col-sm-2" for="txtSubmitBy">Submitted By:</label>
                     <div class="col-sm-10">
                         <asp:TextBox CssClass="form-control" ID="txtSubmitBy" runat="server" placeholder="All"></asp:TextBox>
                     </div>

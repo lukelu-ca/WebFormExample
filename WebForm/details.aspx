@@ -31,7 +31,7 @@
 
                     <div class="row">
                         <div class="col-sm-3">
-                            <h5>Submit By: </h5>
+                            <h5>Submitted By: </h5>
                         </div>
                         <div class="col-sm-2" runat="server" id="divSubmitBy"></div>
                         <div class="col-sm-5">

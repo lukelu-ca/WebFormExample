@@ -44,12 +44,12 @@
 
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
             </asp:ContentPlaceHolder>
-            <footer class="container-fluid text-center">
-                <p>&copy;Copyright Hong Lu, 300804279 COMP 229 - 2016 Fall</p>
-            </footer>
+
         </div>
     </form>
 
-
+    <footer class="container-fluid text-center">
+        <p>&copy;Copyright Hong Lu, 300804279 COMP 229 - 2016 Fall</p>
+    </footer>
 </body>
 </html>

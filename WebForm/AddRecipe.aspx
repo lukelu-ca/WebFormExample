@@ -28,7 +28,7 @@
                     <asp:TextBox ID="txtName" runat="server"  MaxLength="50"></asp:TextBox>
                 </div>
                 <div class="form-group">
-                    <label for="txtSubmitBy">Submit By: </label>
+                    <label for="txtSubmitBy">Submitted By: </label>
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtSubmitBy" runat="server" ErrorMessage="Submit by is mandatory." ControlToValidate="txtSubmitBy"></asp:RequiredFieldValidator>
                     <asp:TextBox ID="txtSubmitBy" runat="server"  MaxLength="50"></asp:TextBox>
                 </div>

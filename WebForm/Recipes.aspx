@@ -60,7 +60,7 @@
                         <table class="table table-striped table-hover">
                             <tr runat="server">
                                 <th runat="server">Name</th>
-                                <th runat="server">Submi tBy</th>
+                                <th runat="server">Submitted By</th>
                                 <th runat="server">Prepare Time</th>
                                 <th runat="server"></th>
                             </tr>
