@@ -209,10 +209,9 @@ namespace WebForm.DAL
 
                 foreach (Ingredient ing in r.ingredients)
                 {
-                   DbCommand cmd2 = factory.CreateCommand();
-
-                    cmd2.Connection = conn;
+                    DbCommand cmd2 = factory.CreateCommand();
                     cmd2.Transaction = trans;
+                    cmd2.Connection = conn;
                     cmd2.CommandType = CommandType.Text;
                     /*
                      * INSERT Statement
@@ -248,15 +247,15 @@ namespace WebForm.DAL
                     cmd2.Parameters.Add(para);
 
                     cmd2.ExecuteNonQuery();
-                    trans.Commit();
                 }
+                trans.Commit();
 
             }
             catch (Exception ex)
             {
                 try
                 {
-                    trans.Commit();
+                    trans.Rollback();
                 }
                 catch (Exception ex1)
                 {
@@ -594,60 +593,61 @@ namespace WebForm.DAL
             {
                 cmd.ExecuteNonQuery();
 
-                cmd = factory.CreateCommand();
-                cmd.CommandText = GetSQLStatement("DELETE FROM RR_INGREDIENT WHERE recipeid = :v_recipeid");
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = getConnection();
+                DbCommand cmd2 = factory.CreateCommand();
+                cmd2.CommandText = GetSQLStatement("DELETE FROM RR_INGREDIENT WHERE recipeid = :v_recipeid");
+                cmd2.CommandType = CommandType.Text;
+                cmd2.Connection = conn;
+                cmd2.Transaction = trans;
 
                 para = factory.CreateParameter();
                 para.ParameterName = getParameterName("v_recipeid");
                 para.DbType = DbType.Int32;
                 para.Value = r.id;
-                cmd.Parameters.Add(para);
+                cmd2.Parameters.Add(para);
 
-                cmd.ExecuteNonQuery();
+                cmd2.ExecuteNonQuery();
 
                 //start create ingredients recorders
 
                 foreach (Ingredient ing in r.ingredients)
                 {
-                    DbCommand cmd2 = factory.CreateCommand();
-                    cmd2.Connection = conn;
-                    cmd2.Transaction = trans;
-                    cmd2.CommandType = CommandType.StoredProcedure;
-                    cmd2.CommandText = "UPDATE_INGREDIENT_SP";
+                    DbCommand cmd3 = factory.CreateCommand();
+                    cmd3.Connection = conn;
+                    cmd3.Transaction = trans;
+                    cmd3.CommandType = CommandType.StoredProcedure;
+                    cmd3.CommandText = "UPDATE_INGREDIENT_SP";
 
                     para = factory.CreateParameter();
                     para.ParameterName = getParameterName("v_id");
                     para.DbType = DbType.Int32;
                     para.Value = ing.id;
-                    cmd2.Parameters.Add(para);
+                    cmd3.Parameters.Add(para);
 
                     para = factory.CreateParameter();
                     para.ParameterName = getParameterName("v_name");
                     para.Value = ing.name;
                     para.DbType = DbType.String;
-                    cmd2.Parameters.Add(para);
+                    cmd3.Parameters.Add(para);
 
                     para = factory.CreateParameter();
                     para.ParameterName = getParameterName("v_quantity");
                     para.DbType = DbType.String;
                     para.Value = ing.quantity;
-                    cmd2.Parameters.Add(para);
+                    cmd3.Parameters.Add(para);
 
                     para = factory.CreateParameter();
                     para.ParameterName = "v_unit";
                     para.DbType = DbType.String;
                     para.Value = ing.unit;
-                    cmd2.Parameters.Add(para);
+                    cmd3.Parameters.Add(para);
 
                     para = factory.CreateParameter();
                     para.ParameterName = getParameterName("v_recipeid");
                     para.DbType = DbType.Int32;
                     para.Value = r.id;
-                    cmd2.Parameters.Add(para);
+                    cmd3.Parameters.Add(para);
 
-                    cmd2.ExecuteNonQuery();
+                    cmd3.ExecuteNonQuery();
                 }
                 trans.Commit();
             }

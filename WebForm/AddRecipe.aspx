@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#"   Debug="true" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="AddRecipe.aspx.cs" Inherits="WebForm.Web.AddRecipe" %>
+﻿<%@ Page Title="" Language="C#" Debug="true" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="AddRecipe.aspx.cs" Inherits="WebForm.Web.AddRecipe" %>
 
 <%@ Register Src="~/UserControls/ucListEditIngedient.ascx" TagPrefix="uc1" TagName="ucListEditIngedient" %>
 <%@ Register Src="~/UserControls/ucCategories.ascx" TagPrefix="uc1" TagName="ucCategories" %>
@@ -7,7 +7,11 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <title>Add Recipe</title>
-
+    <script type="text/javascript">
+        function validateTxtCategory(oSrc, args) {
+            args.IsValid = (args.Value.toString().trim() != "") && (args.Value.toString().trim().toLowerCase() != "other");
+        }
+    </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
@@ -25,31 +29,31 @@
                 <div class="form-group">
                     <label for="txtName">Name:</label>
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtName" runat="server" ControlToValidate="txtName" ErrorMessage="Name is mandatory."></asp:RequiredFieldValidator>
-                    <asp:TextBox ID="txtName" runat="server"  MaxLength="50"></asp:TextBox>
+                    <asp:TextBox ID="txtName" runat="server" MaxLength="50"></asp:TextBox>
                 </div>
                 <div class="form-group">
                     <label for="txtSubmitBy">Submitted By: </label>
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtSubmitBy" runat="server" ErrorMessage="Submit by is mandatory." ControlToValidate="txtSubmitBy"></asp:RequiredFieldValidator>
-                    <asp:TextBox ID="txtSubmitBy" runat="server"  MaxLength="50"></asp:TextBox>
+                    <asp:TextBox ID="txtSubmitBy" runat="server" MaxLength="50"></asp:TextBox>
                 </div>
                 <div class="form-group">
 
                     <label for="ddlCategory">Category:</label>
-                    <uc1:ucCategories runat="server" id="ucCategories1" />
+                    <uc1:ucCategories runat="server" ID="ucCategories1" />
                 </div>
                 <div class="form-group">
                     <label for="txtCookingTime">Prepare/Cooking Time (Minutes):</label>
-                    <asp:TextBox ID="txtCookingTime" runat="server" TextMode="Number"  MaxLength="5"></asp:TextBox>
+                    <asp:TextBox ID="txtCookingTime" runat="server" TextMode="Number" MaxLength="5"></asp:TextBox>
                 </div>
                 <div class="form-group">
                     <label for="txtNumberOfServings">Number of Servings:</label>
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtNumberOfServings" runat="server" ErrorMessage="Number of Servings is mandatory." ControlToValidate="txtNumberOfServings"></asp:RequiredFieldValidator>
-                    <asp:TextBox ID="txtNumberOfServings" runat="server" TextMode="Number"  MaxLength="5"></asp:TextBox>
+                    <asp:TextBox ID="txtNumberOfServings" runat="server" TextMode="Number" MaxLength="5"></asp:TextBox>
                 </div>
                 <div class="form-group">
                     <label for="txtescription">Recipe Description:</label>
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtDescription" runat="server" ErrorMessage="Description is mandatory." ControlToValidate="txtDescription"></asp:RequiredFieldValidator>
-                    <asp:TextBox ID="txtDescription" runat="server" Height="80px" TextMode="MultiLine"  MaxLength="2000"></asp:TextBox>
+                    <asp:TextBox ID="txtDescription" runat="server" Height="80px" TextMode="MultiLine" MaxLength="2000"></asp:TextBox>
                 </div>
                 <div class="row">
                     <div class="col-sm-2">
