@@ -5,7 +5,10 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <div class="container">
-
+        <div class="hidden alert-success" runat="server" id="divMessage">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span id="divMessageBody" runat="server"></span>
+        </div>
         <div class="panel panel-default" runat="server" id="plSignUp">
             <div class="panel-heading">
                 <h3><span class="glyphicon glyphicon-tasks"></span>&nbsp;Reset Password</h3>
@@ -15,7 +18,9 @@
                     runat="server" Width="100%"
                     MailDefinition-BodyFileName="~/EmailTemplates/ChangePassword.html"
                     MailDefinition-IsBodyHtml="true"
-                    MailDefinition-Subject="Password Reset for http://luke-webform.azurewebsites.net">
+                    MailDefinition-Subject="Password Reset for http://luke-webform.azurewebsites.net"
+                    OnVerifyingUser="PasswordRecovery1_VerifyingUser">
+
                     <UserNameTemplate>
 
                         <div class="form-group row">

@@ -10,7 +10,7 @@
         <p>
             This is an assignment project for the course COMP229 Advance Web Application Develop.<br />
         </p>
-        <p>Download assignment instructions: <a href='documents/Assignment1.pdf'>#1</a>, <a href='documents/Assignment1.pdf'>#2</a>, <a href='documents/Assignment1.pdf'>#3</a>, <a href='documents/Assignment1.pdf'>#4</a></p>
+        <p>Download assignment instructions: <a href='documents/Assignment1.pdf'>#1</a>, <a href='documents/Assignment1.pdf'>#2</a>, <a href='documents/Assignment1.pdf'>#3</a>, <a href='documents/Assignment1.pdf'>#4</a>, <a href='documents/Assignment1.pdf'>#5</a></p>
         <p>According to the instructions, this project is developed by ASP.NET and HTML features. </p>
         <ul>
             <li>Create ASP.NET FORM Application</li>
@@ -36,23 +36,31 @@
         <div class="col-md-4">
             <h3>About Luke</h3>
             <p>
-                I am Luke. I like cooking, therefor I searched and kept many recipes from magazine, online and other place. Here I share my recipe book to everyone.<br />
+                I am Luke.
                 <br />
+                I am an ASP.NET web developer.
+               Through this project, I demostrate my skills in <code>C#</code>, <code>ASP.NET WebForm</code>, <code>Bootstrap CSS</code>, <code>Oracle</code>, <code>SQL Server</code>, etc.
+                <br />
+
             </p>
             <img src="images/luke.jpg" class="img-circle" alt="Cinque Terre" width="304" height="236" />
         </div>
         <div class="col-md-4">
-            <h3>My Recipe Book</h3>
-            <p>My Recipe Book is ONE place to store and organize the recipes Luke find and tear out of magazines, bookmark online, store on faded recipe cards – in a format that can be carried & used directly in the kitchen. </p>
+            <h3>Recipe Book</h3>
+            <p>
+                Anonymous user can read all recipes.
+                <br />
+                After signed up, you can share your recipe to all others.
+             For demostration, you can try use <code>admin</code> and <code>test</code> user to <a href="Login.aspx">Login</a> the system.
+            </p>
             <img src="images/books.jpg" class="img-circle" alt="Cinque Terre" width="304" height="236" />
         </div>
         <div class="col-md-4">
             <h3>Setup</h3>
             <p>
-                <a href="setup.aspx">Click here to setup a theme and database</a>
-                <br />
-                <br />
-                <br />
+                The settings of anonymous user are saved in <code>cookies</code>.<br />
+                The settings of login user are saved in <code>profile</code>.<br />
+                <a href="setup.aspx">Click here to setup a theme and database</a><br />
                 <br />
             </p>
             <img src="images/theme.png" class="img-circle" alt="Cinque Terre" width="304" height="236" />

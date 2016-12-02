@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Profile;
@@ -87,6 +88,17 @@ namespace WebForm.Web
             div.Visible = false;
             div.Attributes.Remove("class");
             div.Attributes.Add("class", "hidden");
+        }
+
+        protected bool IsDefaultUser(string username = "")
+        {
+            if (Request.IsAuthenticated)
+            {
+                username = User.Identity.Name;
+            }
+            string defaultuser = ConfigurationManager.AppSettings["DefaultUsers"].ToLower();
+            string[] usr = defaultuser.Split(',');
+            return usr.Contains(username.ToLower());
         }
     }
 }

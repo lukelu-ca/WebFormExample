@@ -5,7 +5,11 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
+/*
+   * Author: Luke Lu
+   * Student ID: 300804279
+   * Course: COMP 229
+   */
 namespace WebForm.Web
 {
     public partial class Login : BasePage

@@ -70,13 +70,14 @@
             </LayoutTemplate>
         </asp:Login>
         <div class="well">
-            There are already two users, <kbd>admin</kbd> is a administrator role, <kbd>test</kbd> is a normal role.
+            There are already two built-in default users, <kbd>admin</kbd> is a administrator role, <kbd>test</kbd> is a normal role.
         <ul>
 
             <li>User Name: <kbd>admin</kbd>, Password: <kbd>Abcd.1234</kbd></li>
             <li>User Name: <kbd>test</kbd>,&nbsp;&nbsp; Password: <kbd>Abcd.1234</kbd></li>
 
         </ul>
+            Everyone can login through these two users.
         </div>
     </div>
 </asp:Content>
