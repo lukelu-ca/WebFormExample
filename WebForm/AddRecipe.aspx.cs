@@ -27,9 +27,14 @@ namespace WebForm.Web
                 ucListEditIngedient1.Initialize(new List<Ingredient>() { new Ingredient { name = string.Empty, quantity = string.Empty, unit = string.Empty } });
                 if (Request.QueryString["success"] == "true")
                 {
-                    divMessage.Attributes.Remove("class");
-                    divMessage.Attributes.Add("class", "alert alert-success");
+                    ShowAlertMessage(divMessage);
                 }
+                else
+                {
+                    HideAlertMessage(divMessage);
+                }
+                txtSubmitBy.Text = User.Identity.Name;
+                txtSubmitBy.ReadOnly = true;
             }
 
         }
@@ -43,7 +48,7 @@ namespace WebForm.Web
                 Recipe r = new Recipe
                 {
                     name = txtName.Text,
-                    submitBy = txtSubmitBy.Text,
+                    submitBy = User.Identity.Name,  //txtSubmitBy.Text,
                     category = ucCategories1.Value,
                     cookingTime = Convert.ToInt32(txtCookingTime.Text),
                     numberOfServings = Convert.ToInt32(txtNumberOfServings.Text),

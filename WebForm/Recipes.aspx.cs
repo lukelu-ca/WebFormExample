@@ -1,6 +1,8 @@
 ﻿using System;
 using WebForm.DAL;
 using System.Web;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
 
 /*
 * Author: Luke Lu
@@ -26,12 +28,24 @@ namespace WebForm.Web
                 RecipeDataBaseRepository repo = new RecipeDataBaseRepository();
                 repo.DeleteRecipe(Convert.ToInt32(e.CommandArgument));
                 ListView1.DataBind();
-                divMessage.Attributes.Remove("class");
-                divMessage.Attributes.Add("class", "alert alert-success");
-                //divMessage.InnerText = "Recipe was deleted successfully.";
+                ShowAlertMessage(divMessage);
 
             }
         }
 
+
+        protected void ListView1_ItemDataBound(object sender, System.Web.UI.WebControls.ListViewItemEventArgs e)
+        {
+            if (e.Item.ItemType == System.Web.UI.WebControls.ListViewItemType.DataItem)
+            {
+                Button btn = (Button)e.Item.FindControl("DeleteItemButton");
+                HtmlGenericControl lbl = (HtmlGenericControl)e.Item.FindControl("submitByLabel");
+
+                //if user does not signin, delete button is invisible
+                btn.Visible = Request.IsAuthenticated;
+                //recipe can only deleted by the submitted user or role adiministrators
+                btn.Enabled = User.IsInRole("Administrators") || lbl.InnerText == User.Identity.Name;
+            }
+        }
     }
 }

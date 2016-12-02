@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Web;
+using System.Web.Caching;
 
 /*
  * Author: Luke Lu
@@ -34,11 +35,30 @@ namespace WebForm.DAL
 
         private string GetCurrentConnectionStringName()
         {
-            if (HttpContext.Current.Request.Cookies["CurrentConnectionStringName"] == null)
-                return ConfigurationManager.AppSettings["DefaultConnectionStringName"];
+            //check value is in settings
+            List<string> settings = new List<string>();
+            for (int i = 0; i < ConfigurationManager.ConnectionStrings.Count; i++)
+            {
+                if (ConfigurationManager.ConnectionStrings[i].Name.StartsWith("My-"))
+                    settings.Add(ConfigurationManager.AppSettings[ConfigurationManager.ConnectionStrings[i].Name]);
+            }
+            string defaultValue = ConfigurationManager.AppSettings["DefaultConnectionStringName"];
+
+            string profileValue = "";
+            if (HttpContext.Current.Request.IsAuthenticated)
+                profileValue = HttpContext.Current.Profile.GetPropertyValue("CurrentConnectionStringName") != null ?
+                    HttpContext.Current.Profile.GetPropertyValue("CurrentConnectionStringName").ToString() : "";
+            string cookieValue = HttpContext.Current.Request.Cookies["CurrentConnectionStringName"] != null ?
+                HttpContext.Current.Request.Cookies["CurrentConnectionStringName"].Value.ToString() :
+                "";
+            if (profileValue != "" && settings.Contains(profileValue))
+                return profileValue;
+            else if (cookieValue != "")
+                return cookieValue;
             else
-                return HttpContext.Current.Request.Cookies["CurrentConnectionStringName"].Value.ToString();
+                return defaultValue;
         }
+
         public RecipeDataBaseRepository()
         {
 
@@ -249,7 +269,7 @@ namespace WebForm.DAL
                     cmd2.ExecuteNonQuery();
                 }
                 trans.Commit();
-
+                DeleteRecipesCache();
             }
             catch (Exception ex)
             {
@@ -310,6 +330,7 @@ namespace WebForm.DAL
 
                 cmd2.ExecuteNonQuery();
                 trans.Commit();
+                DeleteRecipesCache();
             }
             catch (DbException exDb)
             {
@@ -392,6 +413,32 @@ namespace WebForm.DAL
             };
         }
 
+        private List<Recipe> GetRecipesFromCache(bool getIngredients)
+        {
+            //get from Cache
+            if (HttpContext.Current.Cache[GetCurrentConnectionStringName() + "_GetRecipes_" + getIngredients.ToString()] != null)
+            {
+                return (List<Recipe>)HttpContext.Current.Cache[GetCurrentConnectionStringName() + "_GetRecipes_" + getIngredients.ToString()];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private void InsertRecipesToCache(bool getIngredients, List<Recipe> results)
+        {
+            //INSERT a chache
+            HttpContext.Current.Cache.Insert(GetCurrentConnectionStringName() + "_GetRecipes_" + getIngredients.ToString(), results);
+        }
+
+        private void DeleteRecipesCache()
+        {
+            HttpContext.Current.Cache.Remove(GetCurrentConnectionStringName() + "_GetRecipes_" + true.ToString());
+            HttpContext.Current.Cache.Remove(GetCurrentConnectionStringName() + "_GetRecipes_" + false.ToString());
+
+        }
+
         /// <summary>
         /// Get all recipes
         /// </summary>
@@ -399,11 +446,23 @@ namespace WebForm.DAL
         /// <returns></returns>
         public List<Recipe> GetRecipes(bool getIngredients)
         {
+
+            List<Recipe> results = GetRecipesFromCache(getIngredients);
+
+            if (results == null)
+                results = new List<Recipe>();
+            else
+                return results;
+
             DbCommand cmd = factory.CreateCommand();
             cmd.CommandText = "Select * from RR_RECIPE";
             cmd.Connection = getConnection();
             cmd.CommandType = CommandType.Text;
-            return GetRecipes(cmd, getIngredients);
+            results = GetRecipes(cmd, getIngredients);
+
+            InsertRecipesToCache(getIngredients, results);
+
+            return results;
         }
 
         //get all Recipes recorder from a DbCommand
@@ -650,6 +709,8 @@ namespace WebForm.DAL
                     cmd3.ExecuteNonQuery();
                 }
                 trans.Commit();
+                DeleteRecipesCache();
+
             }
             catch (Exception ex)
             {

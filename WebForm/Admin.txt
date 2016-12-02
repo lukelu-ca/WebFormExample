@@ -1,0 +1,21 @@
+﻿"C:\Program Files\IIS Express\iisexpress.exe" /path:c:\windows\Microsoft.NET\Framework\v4.0.30319\ASP.NETWebAdminFiles /vpath:"/asp.netwebadminfiles" /port:8089 /clr:4.0 /ntlm
+
+
+http://localhost:8089/asp.netwebadminfiles/default.aspx?applicationPhysicalPath=C:\Users\lukel\Source\Repos\WebFormExample\WebForm\&applicationUrl=/ 
+
+ 
+		<authentication mode="Forms">
+			<forms name="BalloonShopLogin" loginUrl="Login.aspx" timeout="60"/>
+		</authentication>
+
+
+
+
+	<location path="CatalogAdmin.aspx">
+		<system.web>
+			<authorization>
+				<allow roles="Administrators"/>
+				<deny users="*"/>
+			</authorization>
+		</system.web>
+	</location>

@@ -5,6 +5,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
+using System.Web.Security;
+using System.Web.Profile;
+
 
 /*
    * Author: Luke Lu
@@ -43,30 +46,50 @@ namespace WebForm.Web
                         });
                 }
 
-                rblDataServer.SelectedValue = GetCookie("CurrentConnectionStringName", ConfigurationManager.AppSettings["DefaultConnectionStringName"]);
+                //if loginuser get connectionstring from profile
+                if (Request.IsAuthenticated && Profile.GetPropertyValue("CurrentConnectionStringName").ToString() != "")
+                {
+                    rblDataServer.SelectedValue = Profile.GetPropertyValue("CurrentConnectionStringName").ToString();
+                }
+                else
+                {
+                    //if anonyouse user get form cookie or default value
+                    rblDataServer.SelectedValue = GetCookie("CurrentConnectionStringName", ConfigurationManager.AppSettings["DefaultConnectionStringName"]);
+                }
                 if (Convert.ToBoolean(Request.QueryString["save"]))
                 {
-                    divMessage.Attributes.Remove("class");
-                    divMessage.Attributes.Add("class", "alert alert-success");
+                    ShowAlertMessage(divMessage);
                 }
             }
         }
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
+            string theme;
             if (rdDark.Checked)
             {
-                SetCookie("Theme", "Dark");
+                theme = "Dark";
             }
-            else if(rdLight.Checked)
+            else if (rdLight.Checked)
             {
-                SetCookie("Theme", "Light");
+                theme = "Light";
             }
             else
             {
-                SetCookie("Theme", "Default");
+                theme = "Default";
             }
-            SetCookie("CurrentConnectionStringName", rblDataServer.SelectedValue);
+
+            //if use logged in, save setting value to profile
+            if (Request.IsAuthenticated)
+            {
+                HttpContext.Current.Profile.SetPropertyValue("CurrentConnectionStringName", rblDataServer.SelectedValue);
+                HttpContext.Current.Profile.SetPropertyValue("Theme", theme);
+            }
+            else
+            {
+                SetCookie("Theme", theme);
+                SetCookie("CurrentConnectionStringName", rblDataServer.SelectedValue);
+            }
             Session["CurrentConnectionStringNameChanged"] = true;
             Response.Redirect("~/Setup.aspx?save=true");
         }

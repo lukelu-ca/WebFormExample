@@ -17,7 +17,9 @@
                 <asp:ListView ID="ListView1" runat="server"
                     DataSourceID="RecipeDataSource"
                     DataKeyNames="id"
-                    OnItemCommand="ListView1_ItemCommand">
+                    OnItemCommand="ListView1_ItemCommand"
+                    OnItemDataBound="ListView1_ItemDataBound"
+                    >
                     <EmptyDataTemplate>
                         <table runat="server" class="table">
                             <tr>
@@ -39,11 +41,11 @@
                                 </div>--%>
                             </td>
                             <td>
-                                <asp:Label ID="submitByLabel" runat="server" Text='<%# Eval("submitBy") %>' />
+                                <span id="submitByLabel" runat="server"><%# Eval("submitBy") %></span>
                             </td>
 
                             <td>
-                                <asp:Label ID="cookingTimeLabel" runat="server" Text='<%# Eval("cookingTime") %>' />
+                                <span id="cookingTimeLabel" runat="server"><%# Eval("cookingTime") %></span>
                             </td>
                             <td>
                                 <asp:Button ID="DeleteItemButton"
@@ -62,7 +64,7 @@
                                 <th runat="server">Name</th>
                                 <th runat="server">Submitted By</th>
                                 <th runat="server">Prepare Time</th>
-                                <th runat="server"></th>
+                                <th runat="server">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                             </tr>
                             <tr id="itemPlaceholder" runat="server">
                             </tr>
@@ -74,6 +76,5 @@
             <asp:ObjectDataSource ID="RecipeDataSource" runat="server" SelectMethod="GetRecipes" TypeName="WebForm.DAL.RecipeDataBaseRepository" DataObjectTypeName="WebForm.Model.Recipe"></asp:ObjectDataSource>
         </div>
     </div>
-    <script src="Scripts/AlterAutoHidden.js"></script>
 </asp:Content>
 

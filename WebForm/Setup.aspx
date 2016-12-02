@@ -45,6 +45,5 @@
 
 
     </div>
-    <script src="Scripts/AlterAutoHidden.js"></script>
 </asp:Content>
 

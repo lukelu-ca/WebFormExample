@@ -22,6 +22,7 @@ namespace WebForm.Web
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (Request.QueryString["id"] != null)
             {
                 if (!Page.IsPostBack)
@@ -39,10 +40,13 @@ namespace WebForm.Web
 
             if (Request.QueryString["success"] == "true")
             {
-                divMessage.Attributes.Remove("class");
-                divMessage.Attributes.Add("class", "alert alert-success");
+                ShowAlertMessage(divMessage);
             }
-            
+            else
+            {
+                HideAlertMessage(divMessage);
+            }
+
             recipeID = int.Parse(Request.QueryString["id"]);
             RecipeDataBaseRepository repo = new RecipeDataBaseRepository();
             Recipe recipe = repo.GetRecipe(recipeID);
@@ -68,44 +72,54 @@ namespace WebForm.Web
                 row.Cells.Add(cell);
                 tbl.Rows.Add(row);
             }
+            //if user does not login, can not modify the data
+            btnModify.Visible = isAuthenticated(recipe.submitBy);
         }
 
 
-        
+        private bool isAuthenticated(string submitBy)
+        {
+            return (User.IsInRole("Administrators") || submitBy == User.Identity.Name);
+        }
+
         protected void btnModify_ServerClick(object sender, EventArgs e)
         {
-            LoadUpdate();
+            if (Request.IsAuthenticated)
+                LoadUpdate();
         }
 
         private void LoadUpdate()
         {
-            plDetails.Visible = false;
-            plUpdate.Visible = true;
-            divMessage.Attributes.Remove("class");
-            divMessage.Attributes.Add("class", "hidden alert alert-success");
-
-
+            HideAlertMessage(divMessage);
             recipeID = int.Parse(Request.QueryString["id"]);
             RecipeDataBaseRepository repo = new RecipeDataBaseRepository();
             Recipe recipe = repo.GetRecipe(recipeID);
 
-      
-            txtName.Text = recipe.name;
-            txtSubmitBy.Text = recipe.submitBy;
-            txtSubmitBy.ReadOnly = true;
-            txtSubmitBy.CssClass = "form-control";
-            txtCookingTime.Text = recipe.cookingTime.ToString();
-            txtNumberOfServings.Text = recipe.numberOfServings.ToString();
-            txtDescription.Text = recipe.description;
-            ucCategories1.Value = recipe.category;
+            //check Authenticate
+            if (isAuthenticated(recipe.submitBy))
+            {
+                plDetails.Visible = false;
+                plUpdate.Visible = true;
+               // ShowAlertMessage(divMessage);
 
-            ucListEditIngedient1.Initialize(recipe.ingredients);
+                txtName.Text = recipe.name;
+                txtSubmitBy.Text = recipe.submitBy;
+                txtSubmitBy.ReadOnly = true;
+                txtSubmitBy.CssClass = "form-control";
+                txtCookingTime.Text = recipe.cookingTime.ToString();
+                txtNumberOfServings.Text = recipe.numberOfServings.ToString();
+                txtDescription.Text = recipe.description;
+                ucCategories1.Value = recipe.category;
+
+                ucListEditIngedient1.Initialize(recipe.ingredients);
+            }
 
         }
 
         protected void btnUdate_ServerClick(object sender, EventArgs e)
         {
-            if (Page.IsValid)
+            //check Authenticate
+            if (Page.IsValid && isAuthenticated(txtSubmitBy.Text))
             {
                 Recipe r = new Recipe
                 {
@@ -117,11 +131,10 @@ namespace WebForm.Web
                     numberOfServings = Convert.ToInt32(txtNumberOfServings.Text),
                     description = txtDescription.Text
                 };
-
                 r.ingredients = ucListEditIngedient1.ingredients;
                 new RecipeDataBaseRepository().UpdateRecipe(r);
-
                 Response.Redirect("Details.aspx?id=" + Request.QueryString["id"] + "&success=true");
+
             }
 
         }

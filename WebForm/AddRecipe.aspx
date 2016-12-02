@@ -27,31 +27,32 @@
             </div>
             <div class="panel-body">
                 <div class="form-group">
-                    <label for="txtName">Name:</label>
+                    <label class="control-label pull-left" for="txtName">Name:</label>
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtName" runat="server" ControlToValidate="txtName" ErrorMessage="Name is mandatory."></asp:RequiredFieldValidator>
                     <asp:TextBox ID="txtName" runat="server" MaxLength="50"></asp:TextBox>
                 </div>
                 <div class="form-group">
-                    <label for="txtSubmitBy">Submitted By: </label>
+                    <label class="control-label pull-left" for="txtSubmitBy">Submitted By: </label>
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtSubmitBy" runat="server" ErrorMessage="Submit by is mandatory." ControlToValidate="txtSubmitBy"></asp:RequiredFieldValidator>
                     <asp:TextBox ID="txtSubmitBy" runat="server" MaxLength="50"></asp:TextBox>
                 </div>
-                <div class="form-group">
-
-                    <label for="ddlCategory">Category:</label>
-                    <uc1:ucCategories runat="server" ID="ucCategories1" />
+                <div class="form-group text-left">
+                    <label for="ucCategories1">Category:</label>
+                    <div class="text-left">
+                        <uc1:ucCategories runat="server" ID="ucCategories1" />
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="txtCookingTime">Prepare/Cooking Time (Minutes):</label>
+                    <label class="control-label pull-left" for="txtCookingTime">Prepare/Cooking Time (Minutes):</label>
                     <asp:TextBox ID="txtCookingTime" runat="server" TextMode="Number" MaxLength="5"></asp:TextBox>
                 </div>
                 <div class="form-group">
-                    <label for="txtNumberOfServings">Number of Servings:</label>
+                    <label class="control-label pull-left" for="txtNumberOfServings">Number of Servings:</label>
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtNumberOfServings" runat="server" ErrorMessage="Number of Servings is mandatory." ControlToValidate="txtNumberOfServings"></asp:RequiredFieldValidator>
                     <asp:TextBox ID="txtNumberOfServings" runat="server" TextMode="Number" MaxLength="5"></asp:TextBox>
                 </div>
                 <div class="form-group">
-                    <label for="txtescription">Recipe Description:</label>
+                    <label class="control-label pull-left" for="txtescription">Recipe Description:</label>
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtDescription" runat="server" ErrorMessage="Description is mandatory." ControlToValidate="txtDescription"></asp:RequiredFieldValidator>
                     <asp:TextBox ID="txtDescription" runat="server" Height="80px" TextMode="MultiLine" MaxLength="2000"></asp:TextBox>
                 </div>
@@ -74,6 +75,5 @@
             </div>
         </div>
     </div>
-    <script src="Scripts/AlterAutoHidden.js"></script>
 </asp:Content>
 

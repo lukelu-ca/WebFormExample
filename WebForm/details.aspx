@@ -17,7 +17,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
     <div class="container">
-        <div class="hidden alert-success" runat="server" id="divMessage">
+        <div class="hidden alert-success" runat="server" id="divMessage" visible="false">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <span id="divMessageBody" runat="server">Recipe was updated successfully.</span>
         </div>
@@ -103,7 +103,7 @@
                         </div>
                         <div class="col-md-3">
 
-                            <asp:TextBox ID="txtSubmitBy" runat="server" MaxLength="50" CssClass="form-control"></asp:TextBox><br />
+                            <asp:TextBox ID="txtSubmitBy" runat="server" MaxLength="50"  ></asp:TextBox><br />
                             <asp:RequiredFieldValidator ID="rvTxtSubmitBy" runat="server" ErrorMessage="*" ControlToValidate="txtSubmitBy"></asp:RequiredFieldValidator>
 
                         </div>
@@ -160,7 +160,6 @@
         </div>
 
     </div>
-    <script src="Scripts/AlterAutoHidden.js"></script>
 
 </asp:Content>
 

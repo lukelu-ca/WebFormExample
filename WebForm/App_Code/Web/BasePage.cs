@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Profile;
+using System.Web.UI.HtmlControls;
 /*
- * Author: Luke Lu
- * Student ID: 300804279
- * Course: COMP 229
- */
+* Author: Luke Lu
+* Student ID: 300804279
+* Course: COMP 229
+*/
 namespace WebForm.Web
 {
     /// <summary>
@@ -26,7 +28,15 @@ namespace WebForm.Web
 
         protected void Page_PreInit(object sender, EventArgs e)
         {
-            if (Request.Cookies["Theme"] != null) selectedTheme = Request.Cookies["Theme"].Value.ToString();
+            if (Request.IsAuthenticated && HttpContext.Current.Profile.GetPropertyValue("Theme").ToString() != "")
+            {
+                selectedTheme = HttpContext.Current.Profile.GetPropertyValue("Theme").ToString();
+            }
+            else
+            {
+                if (Request.Cookies["Theme"] != null) selectedTheme = Request.Cookies["Theme"].Value.ToString();
+            }
+
             //Load Theme for all pages
             switch (selectedTheme)
             {
@@ -47,7 +57,7 @@ namespace WebForm.Web
         public void SetCookie(string name, string value, int expireDays = 15)
         {
             HttpCookie cookie = new HttpCookie(name, value);
-            cookie.Expires= DateTime.Now.AddDays(expireDays);
+            cookie.Expires = DateTime.Now.AddDays(expireDays);
             Response.SetCookie(cookie);
         }
 
@@ -64,5 +74,19 @@ namespace WebForm.Web
             }
         }
 
+
+        protected void ShowAlertMessage(HtmlGenericControl div, HtmlGenericControl msgbody = null, string msg = "")
+        {
+            div.Visible = true;
+            div.Attributes.Remove("class");
+            div.Attributes.Add("class", "alert alert-success");
+            if (msg != "" && msgbody != null) msgbody.InnerText = msg;
+        }
+        protected void HideAlertMessage(HtmlGenericControl div)
+        {
+            div.Visible = false;
+            div.Attributes.Remove("class");
+            div.Attributes.Add("class", "hidden");
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace WebForm.Web
         public string[] Active = new string[4];
         protected void Page_Load(object sender, EventArgs e)
         {
+
             const string classActive = "class=\"active\"";
             string Url = Request.Url.ToString().ToLower();
             if (Url.IndexOf("/default.aspx") > 0) Active[0] = classActive;
@@ -23,7 +24,17 @@ namespace WebForm.Web
             if (Url.IndexOf("/addrecipe.aspx") > 0) Active[2] = classActive;
             if (Url.IndexOf("/search.aspx") > 0) Active[3] = classActive;
 
-
+            if (Request.IsAuthenticated)
+            {
+                ulAnonymous.Visible = false;
+                ulMember.Visible = true;
+                spanUsername.InnerText = "Hello, " + HttpContext.Current.User.Identity.Name;
+            }
+            else
+            {
+                ulAnonymous.Visible = true;
+                ulMember.Visible = false;
+            }
         }
 
     }

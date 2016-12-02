@@ -23,6 +23,7 @@
             <li>Changing database connectionstring dynamicly and save in users cookies</li>
             <li>Develop productive web design page by Bootstrap</li>
             <li>Opening Bootstrap remote modal window</li>
+            <li>Implement ASPNET Membership by OracleProvider and SQLServerProvider</li>
             <li>Connecting to Amazon Web Service Cloud RDS Oracle Database</li>
             <li>Connecting to Microsoft Azure SQL Server Database</li>
             <li>Deploy application to Microsoft Azure</li>

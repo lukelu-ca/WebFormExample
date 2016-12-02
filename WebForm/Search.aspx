@@ -15,19 +15,19 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="txtSubmitBy">Submitted By:</label>
                     <div class="col-sm-10">
-                        <asp:TextBox CssClass="form-control" ID="txtSubmitBy" runat="server" placeholder="All"></asp:TextBox>
+                        <asp:TextBox ID="txtSubmitBy" runat="server" placeholder="All"></asp:TextBox>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="txtCategory">Category:</label>
                     <div class="col-sm-10">
-                        <asp:TextBox CssClass="form-control" ID="txtCategory" runat="server" placeholder="All"></asp:TextBox>
+                        <asp:TextBox ID="txtCategory" runat="server" placeholder="All"></asp:TextBox>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="txtIngredient">Ingredient Name:</label>
                     <div class="col-sm-10">
-                        <asp:TextBox CssClass="form-control" ID="txtIngredient" runat="server" placeholder="All"></asp:TextBox>
+                        <asp:TextBox ID="txtIngredient" runat="server" placeholder="All"></asp:TextBox>
                     </div>
                 </div>
                 <div class="form-group">
@@ -53,20 +53,20 @@
                                 <div class="modal fade" id='myModal<%# Eval("id") %>' role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            <div class="btn-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</div>
+                                            <div class="btn-warning"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>Loading...</div>
                                         </div>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <asp:Label ID="submitByLabel" runat="server" Text='<%# Eval("submitBy") %>' />
+                                <span id="submitByLabel" runat="server"><%# Eval("submitBy") %></span>
                             </td>
 
                             <td>
-                                <asp:Label ID="cookingTimeLabel" runat="server" Text='<%# Eval("cookingTime") %>' />
+                                <span id="cookingTimeLabel" runat="server"><%# Eval("cookingTime") %></span>
                             </td>
                             <td>
-                                <asp:Label ID="numberOfServingsLabel" runat="server" Text='<%# Eval("numberofservings") %>' />
+                                <span id="numberOfServingsLabel" runat="server"><%# Eval("numberofservings") %></span>
                             </td>
 
                         </tr>
