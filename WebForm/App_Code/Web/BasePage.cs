@@ -5,6 +5,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Profile;
 using System.Web.UI.HtmlControls;
+using System.IO;
+
 /*
 * Author: Luke Lu
 * Student ID: 300804279
@@ -18,7 +20,7 @@ namespace WebForm.Web
     public class BasePage : System.Web.UI.Page
     {
 
-        protected string selectedTheme = null;
+        protected string selectedTheme = "Default";
         public BasePage()
         {
             //
@@ -37,19 +39,13 @@ namespace WebForm.Web
             {
                 if (Request.Cookies["Theme"] != null) selectedTheme = Request.Cookies["Theme"].Value.ToString();
             }
-
-            //Load Theme for all pages
-            switch (selectedTheme)
+            try
             {
-                case "Dark":
-                    Page.Theme = "Dark";
-                    break;
-                case "Light":
-                    Page.Theme = "Light";
-                    break;
-                default:
-                    Page.Theme = "Default";
-                    break;
+                Page.Theme = selectedTheme;
+            }
+            catch
+            {
+                Page.Theme = "Default";
             }
         }
 
@@ -99,6 +95,19 @@ namespace WebForm.Web
             string defaultuser = ConfigurationManager.AppSettings["DefaultUsers"].ToLower();
             string[] usr = defaultuser.Split(',');
             return usr.Contains(username.ToLower());
+        }
+
+        protected List<string> GetThemeList()
+        {
+            List<string> list = new List<string>();
+            DirectoryInfo dir = new DirectoryInfo(Server.MapPath("~/App_Themes"));
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            foreach (DirectoryInfo d in dirs)
+            {
+                list.Add(d.Name);
+            }
+            list.Sort();
+            return list;
         }
     }
 }

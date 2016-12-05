@@ -21,6 +21,8 @@
                     <asp:RadioButton ID="rdDefault" runat="server" GroupName="rdTheme" Text="Default" /> <br />
                     <asp:RadioButton ID="rdDark" runat="server" GroupName="rdTheme" Text="Dark" /><br />
                     <asp:RadioButton ID="rdLight" runat="server" GroupName="rdTheme" Text="Light" />
+                    <asp:RadioButtonList ID="rblTheme" runat="server" RepeatColumns="4" CssClass="table">
+                    </asp:RadioButtonList>
                 </div>
 
             </div>

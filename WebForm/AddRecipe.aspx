@@ -36,11 +36,11 @@
                     &nbsp;<asp:RequiredFieldValidator ID="rvTxtSubmitBy" runat="server" ErrorMessage="Submit by is mandatory." ControlToValidate="txtSubmitBy"></asp:RequiredFieldValidator>
                     <asp:TextBox ID="txtSubmitBy" runat="server" MaxLength="50"></asp:TextBox>
                 </div>
-                <div class="form-group text-left">
+                <div class="form-group">
                     <label for="ucCategories1">Category:</label>
-                    <div class="text-left">
-                        <uc1:ucCategories runat="server" ID="ucCategories1" />
-                    </div>
+
+                    <uc1:ucCategories runat="server" ID="ucCategories1" />
+
                 </div>
                 <div class="form-group">
                     <label class="control-label pull-left" for="txtCookingTime">Prepare/Cooking Time (Minutes):</label>

@@ -40,7 +40,7 @@ namespace WebForm.DAL
             for (int i = 0; i < ConfigurationManager.ConnectionStrings.Count; i++)
             {
                 if (ConfigurationManager.ConnectionStrings[i].Name.StartsWith("My-"))
-                    settings.Add(ConfigurationManager.AppSettings[ConfigurationManager.ConnectionStrings[i].Name]);
+                    settings.Add(ConfigurationManager.ConnectionStrings[i].Name);
             }
             string defaultValue = ConfigurationManager.AppSettings["DefaultConnectionStringName"];
 
@@ -48,6 +48,7 @@ namespace WebForm.DAL
             if (HttpContext.Current.Request.IsAuthenticated)
                 profileValue = HttpContext.Current.Profile.GetPropertyValue("CurrentConnectionStringName") != null ?
                     HttpContext.Current.Profile.GetPropertyValue("CurrentConnectionStringName").ToString() : "";
+
             string cookieValue = HttpContext.Current.Request.Cookies["CurrentConnectionStringName"] != null ?
                 HttpContext.Current.Request.Cookies["CurrentConnectionStringName"].Value.ToString() :
                 "";

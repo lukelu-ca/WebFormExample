@@ -14,6 +14,7 @@ namespace WebForm.Web
 {
 
     public partial class AddRecipe : BasePage
+
     {
 
         protected void Page_Load(object sender, EventArgs e)

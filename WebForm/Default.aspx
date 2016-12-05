@@ -10,7 +10,7 @@
         <p>
             This is an assignment project for the course COMP229 Advance Web Application Develop.<br />
         </p>
-        <p>Download assignment instructions: <a href='documents/Assignment1.pdf'>#1</a>, <a href='documents/Assignment1.pdf'>#2</a>, <a href='documents/Assignment1.pdf'>#3</a>, <a href='documents/Assignment1.pdf'>#4</a>, <a href='documents/Assignment1.pdf'>#5</a></p>
+        <p>Download assignment instructions: <a href='documents/Assignment1.pdf'>#1</a>, <a href='documents/Assignment2.pdf'>#2</a>, <a href='documents/Assignment3.pdf'>#3</a>, <a href='documents/Assignment4.pdf'>#4</a>, <a href='documents/Assignment5.pdf'>#5</a></p>
         <p>According to the instructions, this project is developed by ASP.NET and HTML features. </p>
         <ul>
             <li>Create ASP.NET FORM Application</li>
@@ -51,7 +51,7 @@
                 Anonymous user can read all recipes.
                 <br />
                 After signed up, you can share your recipe to all others.
-             For demostration, you can try use <code>admin</code> and <code>test</code> user to <a href="Login.aspx">Login</a> the system.
+             For demostration, you can try to use <code>admin</code> and <code>test</code> user to <a href="Login.aspx">Login</a> the system.
             </p>
             <img src="images/books.jpg" class="img-circle" alt="Cinque Terre" width="304" height="236" />
         </div>

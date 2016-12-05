@@ -40,6 +40,7 @@ namespace WebForm.Web
             else if (txtCategory.Text.Trim().ToLower() == "other")
             {
                 args.IsValid = false;
+
                 cvTxtCategory.ErrorMessage = "Category can not be : \"Other.\"";
             }
             else

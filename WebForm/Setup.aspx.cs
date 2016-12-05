@@ -22,17 +22,35 @@ namespace WebForm.Web
         {
             if (!Page.IsPostBack)
             {
-                switch (Page.Theme)
+                if (Request.IsAuthenticated)
                 {
-                    case "Dark":
-                        rdDark.Checked = true;
-                        break;
-                    case "Light":
-                        rdLight.Checked = true;
-                        break;
-                    default:
-                        rdDefault.Checked = true;
-                        break;
+                    rdDark.Visible = false;
+                    rdLight.Visible = false;
+                    rdDefault.Visible = false;
+                    rblTheme.Visible = true;
+                    rblTheme.DataSource = GetThemeList();
+                    rblTheme.DataBind();
+                    rblTheme.SelectedValue = Page.Theme;
+
+                }
+                else
+                {
+                    rdDark.Visible = true;
+                    rdLight.Visible = true;
+                    rdDefault.Visible = true;
+                    rblTheme.Visible = false;
+                    switch (Page.Theme)
+                    {
+                        case "Dark":
+                            rdDark.Checked = true;
+                            break;
+                        case "Light":
+                            rdLight.Checked = true;
+                            break;
+                        default:
+                            rdDefault.Checked = true;
+                            break;
+                    }
                 }
 
                 for (int i = 0; i < ConfigurationManager.ConnectionStrings.Count; i++)
@@ -66,17 +84,24 @@ namespace WebForm.Web
         protected void btnSave_Click(object sender, EventArgs e)
         {
             string theme;
-            if (rdDark.Checked)
+            if (Request.IsAuthenticated)
             {
-                theme = "Dark";
-            }
-            else if (rdLight.Checked)
-            {
-                theme = "Light";
+                theme = rblTheme.SelectedValue;
             }
             else
             {
-                theme = "Default";
+                if (rdDark.Checked)
+                {
+                    theme = "Dark";
+                }
+                else if (rdLight.Checked)
+                {
+                    theme = "Light";
+                }
+                else
+                {
+                    theme = "Default";
+                }
             }
 
             //if use logged in, save setting value to profile
@@ -84,6 +109,7 @@ namespace WebForm.Web
             {
                 HttpContext.Current.Profile.SetPropertyValue("CurrentConnectionStringName", rblDataServer.SelectedValue);
                 HttpContext.Current.Profile.SetPropertyValue("Theme", theme);
+                HttpContext.Current.Profile.Save();
             }
             else
             {
